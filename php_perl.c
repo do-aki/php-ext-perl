@@ -12,7 +12,7 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Dmitry Stogov                                                |
+   | Author: Dmitry Stogov <dmitry@zend.com>                              |
    +----------------------------------------------------------------------+
    $Id$
 */
@@ -1263,11 +1263,6 @@ PHP_MSHUTDOWN_FUNCTION(perl)
   return SUCCESS;
 }
 
-PHP_RINIT_FUNCTION(perl)
-{
-  return SUCCESS;
-}
-
 PHP_RSHUTDOWN_FUNCTION(perl)
 {
   php_perl_destroy(TSRMLS_C);
@@ -1540,7 +1535,7 @@ zend_module_entry perl_module_entry = {
   perl_functions,
   PHP_MINIT(perl),
   PHP_MSHUTDOWN(perl),
-  PHP_RINIT(perl),
+  NULL,
   PHP_RSHUTDOWN(perl),
   PHP_MINFO(perl),
 #if ZEND_MODULE_API_NO >= 20010901
