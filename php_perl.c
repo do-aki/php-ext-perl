@@ -1887,7 +1887,7 @@ zend_module_entry perl_module_entry = {
   PHP_RSHUTDOWN(perl),
   PHP_MINFO(perl),
 #if ZEND_MODULE_API_NO >= 20010901
-  "0.7-dev",
+  "0.7",
 #endif
   STANDARD_MODULE_PROPERTIES
 };
