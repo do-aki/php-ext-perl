@@ -43,6 +43,7 @@
 
 #include "php.h"
 #include "php_ini.h"
+#include "zend_objects_API.h"
 #include "ext/standard/info.h"
 #include "SAPI.h"
 #include "php_perl.h"
@@ -100,7 +101,7 @@ static void php_perl_sv_to_zval(PerlInterpreter* my_perl, SV* sv, zval* zv TSRML
 static zend_object_value php_perl_clone(zval *object TSRMLS_DC);
 static zval* php_perl_read_property(zval *object, zval *member, zend_bool silent TSRMLS_DC);
 static void php_perl_write_property(zval *object, zval *member, zval *value TSRMLS_DC);
-static zval* php_perl_read_dimension(zval *object, zval *offset TSRMLS_DC);
+static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS_DC);
 static void php_perl_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC);
 static int php_perl_has_property(zval *object, zval *member, int check_empty TSRMLS_DC);
 static void php_perl_unset_property(zval *object, zval *member TSRMLS_DC);
@@ -120,7 +121,6 @@ static void php_perl_destructor(void *perl_object, zend_object_handle handle TSR
 static zend_object_handlers php_perl_object_handlers = {
   zend_objects_store_add_ref,      /* add_ref */
   zend_objects_store_del_ref,      /* del_ref */
-  zend_objects_store_delete_obj,   /* delete_obj */
   php_perl_clone,                  /* clone_obj */
 
   php_perl_read_property,          /* read_property */
@@ -151,7 +151,9 @@ zend_internal_function php_perl_constructor_function = {
   0,
   NULL,
   1,
+  1,
   NULL,
+  0,
   0,
   php_perl_constructor_handler
 };
@@ -446,7 +448,7 @@ static zval* php_perl_sv_to_zval_noref(PerlInterpreter *my_perl,
         zv->type = IS_OBJECT;
         zv->value.obj.handlers = &php_perl_object_handlers;
         zv->value.obj.handle =
-          zend_objects_store_put(obj, php_perl_destructor, NULL TSRMLS_CC);
+          zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);
         php_perl_remember_object(sv, zv->value.obj.handle TSRMLS_CC);
       }
     } else if (SvROK(sv)) {                        /* reference */
@@ -622,7 +624,7 @@ static void php_perl_call(PerlInterpreter* my_perl,
 /****************************************************************************/
 
 /* Returns element of array based Perl's object */
-static zval* php_perl_read_dimension(zval *object, zval *offset TSRMLS_DC)
+static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS_DC)
 {
   PerlInterpreter* my_perl = php_perl_init(TSRMLS_C);
   zval *retval = EG(uninitialized_zval_ptr);
@@ -1127,7 +1129,7 @@ static zend_object_value php_perl_clone(zval *object TSRMLS_DC)
 
   new_value.handlers = &php_perl_object_handlers;
   new_value.handle =
-    zend_objects_store_put(obj, php_perl_destructor, NULL TSRMLS_CC);
+    zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);
 
   php_perl_remember_object(obj->sv, new_value.handle TSRMLS_CC);
 
@@ -1145,7 +1147,7 @@ static zend_object_value php_perl_create_object(zend_class_entry *class_type TSR
 
   new_value.handlers = &php_perl_object_handlers;
   new_value.handle =
-    zend_objects_store_put(obj, php_perl_destructor, NULL TSRMLS_CC);
+    zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);
 
   return new_value;
 }
@@ -1180,7 +1182,7 @@ static int php_perl_iterator_has_more(zend_object_iterator *iterator TSRMLS_DC)
   zval* object =(zval*)iterator->data;
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);
   if (obj->properties) {
-    return zend_hash_has_more_elements(obj->properties);//?SUCCESS:FAILURE;
+    return zend_hash_has_more_elements(obj->properties);
   }
   return FAILURE;
 }
@@ -1347,13 +1349,12 @@ PHP_FUNCTION(perl_eval)
           av_store(av, count-i, POPs);
         }
         php_perl_sv_to_zval(my_perl, (SV*)av, return_value TSRMLS_CC);
-        PUTBACK;
       } else {
         eval_sv(sv, G_SCALAR|G_KEEPERR);
         SPAGAIN;
         php_perl_sv_to_zval(my_perl, POPs, return_value TSRMLS_CC);
-        PUTBACK;
       }
+      PUTBACK;
     } else {
       PERLG(wantarray) = 0;
       eval_sv(sv, G_DISCARD|G_KEEPERR);
@@ -1539,7 +1540,7 @@ zend_module_entry perl_module_entry = {
   PHP_RSHUTDOWN(perl),
   PHP_MINFO(perl),
 #if ZEND_MODULE_API_NO >= 20010901
-  "0.4",
+  "0.5",
 #endif
   STANDARD_MODULE_PROPERTIES
 };

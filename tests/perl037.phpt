@@ -18,7 +18,7 @@ package main;
 PERL_END
 );
 $x = new Perl('Foo');
-$y = $x->__clone();
+$y = clone $x;
 $x->x = 1;
 $y->x = 2;
 var_dump($x);

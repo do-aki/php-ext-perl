@@ -22,7 +22,7 @@ package main;
 PERL_END
 );
 $x = new Perl('Foo');
-$y = $x->__clone();
+$y = clone $x;
 $x->modify(1);
 $y->modify(2);
 var_dump($x);
