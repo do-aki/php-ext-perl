@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<package version="1.0">
+ <name>perl</name>
+ <summary>Embedded Perl.</summary>
+ <description>
+  This extension embeds Perl Interpreter into PHP. It allows execute Perl files, evaluate Perl code, access Perl variables and instantiate Perl objects.
+ </description>
+ <license>PHP</license>
+ <maintainers>
+  <maintainer>
+   <user>dmitry</user>
+   <name>Dmitry Stogov</name>
+   <email>dmitry@zend.com</email>
+   <role>lead</role>
+  </maintainer>
+ </maintainers>
+
+ <release>
+  <version>0.6</version>
+  <date>2004-03-11</date>
+  <state>stable</state>
+  <notes>
+   This is the first release.
+  </notes>
+  <filelist>
+   <dir name="/" baseinstalldir="perl">
+    <file role="doc">CREDITS</file>
+    <file role="doc">EXPERIMENTAL</file>
+    <file role="doc">README</file>
+    <file role="doc">TODO</file>
+    <file role="src">php_perl.h</file>
+    <file role="src">php_perl.c</file>
+    <file role="src">perl.dsp</file>
+    <file role="src">config.m4</file>
+    <file role="src">config.w32</file>
+    <dir name="tests" role="test">
+     <file role="test">skipif.inc</file>
+     <file role="test">perl001.pl</file>
+     <file role="test">perl001.phpt</file>
+     <file role="test">perl002.phpt</file>
+     <file role="test">perl003.phpt</file>
+     <file role="test">perl004.phpt</file>
+     <file role="test">perl005.phpt</file>
+     <file role="test">perl006.phpt</file>
+     <file role="test">perl007.phpt</file>
+     <file role="test">perl008.phpt</file>
+     <file role="test">perl009.phpt</file>
+     <file role="test">perl010.phpt</file>
+     <file role="test">perl011.phpt</file>
+     <file role="test">perl012.phpt</file>
+     <file role="test">perl013.phpt</file>
+     <file role="test">perl014.phpt</file>
+     <file role="test">perl015.phpt</file>
+     <file role="test">perl016.phpt</file>
+     <file role="test">perl017.phpt</file>
+     <file role="test">perl018.phpt</file>
+     <file role="test">perl019.phpt</file>
+     <file role="test">perl020.phpt</file>
+     <file role="test">perl021.phpt</file>
+     <file role="test">perl022.phpt</file>
+     <file role="test">perl023.phpt</file>
+     <file role="test">perl024.phpt</file>
+     <file role="test">perl025.phpt</file>
+     <file role="test">perl026.phpt</file>
+     <file role="test">perl027.phpt</file>
+     <file role="test">perl028.phpt</file>
+     <file role="test">perl029.phpt</file>
+     <file role="test">perl030.phpt</file>
+     <file role="test">perl031.phpt</file>
+     <file role="test">perl032.phpt</file>
+     <file role="test">perl033.phpt</file>
+     <file role="test">perl034.phpt</file>
+     <file role="test">perl035.phpt</file>
+     <file role="test">perl036.phpt</file>
+     <file role="test">perl037.phpt</file>
+     <file role="test">perl038.phpt</file>
+     <file role="test">perl039.phpt</file>
+     <file role="test">perl040.phpt</file>
+     <file role="test">perl041.phpt</file>
+     <file role="test">perl042.phpt</file>
+     <file role="test">perl043.phpt</file>
+     <file role="test">perl044.phpt</file>
+     <file role="test">perl045.phpt</file>
+     <file role="test">perl046.phpt</file>
+     <file role="test">perl047.phpt</file>
+     <file role="test">perl048.phpt</file>
+     <file role="test">perl049.phpt</file>
+     <file role="test">perl050.phpt</file>
+     <file role="test">perl051.phpt</file>
+     <file role="test">perl052.phpt</file>
+     <file role="test">perl053.phpt</file>
+     <file role="test">perl054.phpt</file>
+     <file role="test">perl055.phpt</file>
+     <file role="test">perl056.phpt</file>
+     <file role="test">perl057.phpt</file>
+     <file role="test">perl058.phpt</file>
+     <file role="test">perl059.phpt</file>
+     <file role="test">perl060.phpt</file>
+     <file role="test">perl061.phpt</file>
+     <file role="test">perl062.phpt</file>
+     <file role="test">perl063.phpt</file>
+     <file role="test">perl064.phpt</file>
+     <file role="test">perl065.phpt</file>
+     <file role="test">perl066.phpt</file>
+     <file role="test">perl067.phpt</file>
+     <file role="test">perl068.phpt</file>
+     <file role="test">perl069.phpt</file>
+     <file role="test">perl070.phpt</file>
+    </dir>
+   </dir>
+  </filelist>
+ </release>
+ <deps>
+  <dep type="php" rel="ge" version="5.0.0b4" />
+ </deps>
+</package>
