@@ -4,8 +4,8 @@
 ARG_WITH("perl", "Perl support (where to find Perl interpriter)", "no");
 
 if (PHP_PERL != "no") {
-  if (CHECK_LIB("perl58.lib", "perl", PHP_PERL) &&
-      CHECK_HEADER_ADD_INCLUDE("perl.h", "CFLAGS_PERL", PHP_PERL)) {
+  if (CHECK_LIB("perl*.lib", "perl", PHP_PERL + ";\\Perl\\lib\\CORE" ) &&
+      CHECK_HEADER_ADD_INCLUDE("perl.h", "CFLAGS_PERL", PHP_PERL + ";\\Perl\\lib\\CORE")) {
     EXTENSION("perl", "php_perl.c");
     AC_DEFINE("HAVE_PERL", 1, "Perl support");
 
