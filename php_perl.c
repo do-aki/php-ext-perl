@@ -964,6 +964,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj = emalloc(sizeof(php_perl_object));
       memcpy(new_obj, obj, sizeof(php_perl_object));
       new_obj->context = PERL_ARRAY;
+      new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
       new_object->refcount = 0;
@@ -980,6 +981,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj = emalloc(sizeof(php_perl_object));
       memcpy(new_obj, obj, sizeof(php_perl_object));
       new_obj->context = PERL_HASH;
+      new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
       new_object->refcount = 0;
@@ -996,6 +998,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj = emalloc(sizeof(php_perl_object));
       memcpy(new_obj, obj, sizeof(php_perl_object));
       new_obj->context = PERL_SCALAR;
+      new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
       new_object->refcount = 0;
