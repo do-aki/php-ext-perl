@@ -121,7 +121,7 @@ static zval* php_perl_sv_to_zval(PerlInterpreter* my_perl, SV* sv, zval* zv TSRM
 
 /* Handlers for Perl objects overloading */
 static zend_object_value php_perl_clone(zval *object TSRMLS_DC);
-static zval* php_perl_read_property(zval *object, zval *member, int silent TSRMLS_DC);
+static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_DC);
 static void php_perl_write_property(zval *object, zval *member, zval *value TSRMLS_DC);
 static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS_DC);
 static void php_perl_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC);
@@ -139,7 +139,7 @@ int php_perl_get_class_name(zval *object, char **class_name, zend_uint *class_na
 static void php_perl_constructor_handler(INTERNAL_FUNCTION_PARAMETERS);
 
 static void php_perl_destructor(void *perl_object, zend_object_handle handle TSRMLS_DC);
-static void php_perl_destructor_ex(void *perl_object, zend_object_handle handle TSRMLS_DC);
+static void php_perl_cleaner(void *perl_object, zend_object_handle handle TSRMLS_DC);
 
 static zend_object_handlers php_perl_object_handlers = {
   zend_objects_store_add_ref,      /* add_ref */
@@ -730,7 +730,8 @@ static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS
       /* ensure we're creating a temporary variable */
       if (retval) {retval->refcount = 0;}
     }
-
+  } else {
+    zend_error(E_WARNING, "[perl] Object is not an array");
   }
   if (retval == NULL) {
     return EG(uninitialized_zval_ptr);
@@ -759,6 +760,8 @@ static void php_perl_write_dimension(zval *object, zval *offset, zval *value TSR
     convert_to_long(offset);
 
     av_store(av, Z_LVAL_P(offset), php_perl_zval_to_sv(my_perl, value TSRMLS_CC));
+  } else {
+    zend_error(E_WARNING, "[perl] Object is not an array");
   }
 }
 
@@ -790,8 +793,7 @@ static int php_perl_has_dimension(zval *object, zval *offset, int check_empty TS
         ALLOC_INIT_ZVAL(zv);
         php_perl_sv_to_zval(my_perl, *prop_val, zv TSRMLS_CC);
         ret = zend_is_true(zv);
-        zval_dtor(zv);
-        FREE_ZVAL(zv);
+        zval_ptr_dtor(&zv);
       }
     } else {
       /* isset() */
@@ -799,6 +801,8 @@ static int php_perl_has_dimension(zval *object, zval *offset, int check_empty TS
         ret = 1;
       }
     }
+  } else {
+    zend_error(E_WARNING, "[perl] Object is not an array");
   }
   return ret;
 }
@@ -822,11 +826,13 @@ static void php_perl_unset_dimension(zval *object, zval *offset TSRMLS_DC)
     convert_to_long(offset);
 
     av_delete(av, Z_LVAL_P(offset), G_DISCARD);
+  } else {
+    zend_error(E_WARNING, "[perl] Object is not an array");
   }
 }
 
 /* Returns propery of hash based Perl's object */
-static zval* php_perl_read_property(zval *object, zval *member, int silent TSRMLS_DC)
+static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_DC)
 {
   PerlInterpreter* my_perl = php_perl_init(TSRMLS_C);
   zval *retval = NULL;
@@ -841,7 +847,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int silent TSRML
     member = &tmp_member;
   }
   if (obj->context == PERL_SCALAR) {
-    if (strcmp(Z_STRVAL_P(member),"array") == 0) {
+    if (zend_binary_strcmp(Z_STRVAL_P(member), Z_STRLEN_P(member), "array", sizeof("array")-1) == 0) {
       php_perl_object *new_obj;
       zval* new_object;
 
@@ -854,10 +860,10 @@ static zval* php_perl_read_property(zval *object, zval *member, int silent TSRML
       new_object->type = IS_OBJECT;
       new_object->value.obj.handlers = &php_perl_object_handlers;
       new_object->value.obj.handle =
-        zend_objects_store_put(new_obj, php_perl_destructor_ex, NULL, NULL TSRMLS_CC);
+        zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
 
       return new_object;
-    } else if (strcmp(Z_STRVAL_P(member),"hash") == 0) {
+    } else if (zend_binary_strcmp(Z_STRVAL_P(member),Z_STRLEN_P(member),"hash",sizeof("hash")-1) == 0) {
       php_perl_object *new_obj;
       zval* new_object;
 
@@ -870,7 +876,23 @@ static zval* php_perl_read_property(zval *object, zval *member, int silent TSRML
       new_object->type = IS_OBJECT;
       new_object->value.obj.handlers = &php_perl_object_handlers;
       new_object->value.obj.handle =
-        zend_objects_store_put(new_obj, php_perl_destructor_ex, NULL, NULL TSRMLS_CC);
+        zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
+
+      return new_object;
+    } else if (zend_binary_strcmp(Z_STRVAL_P(member),Z_STRLEN_P(member),"scalar",sizeof("scalar")-1) == 0) {
+      php_perl_object *new_obj;
+      zval* new_object;
+
+      new_obj = emalloc(sizeof(php_perl_object));
+      memcpy(new_obj, obj, sizeof(php_perl_object));
+      new_obj->context = PERL_SCALAR;
+
+      ALLOC_INIT_ZVAL(new_object);
+      new_object->refcount = 0;
+      new_object->type = IS_OBJECT;
+      new_object->value.obj.handlers = &php_perl_object_handlers;
+      new_object->value.obj.handle =
+        zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
 
       return new_object;
     }
@@ -916,7 +938,8 @@ static zval* php_perl_read_property(zval *object, zval *member, int silent TSRML
         /* ensure we're creating a temporary variable */
         if (retval) {retval->refcount = 0;}
       }
-
+    } else {
+      zend_error(E_WARNING, "[perl] Object is not a hash");
     }
   }
   if (member == &tmp_member) {
@@ -1012,6 +1035,8 @@ static void php_perl_write_property(zval *object, zval *member, zval *value TSRM
 
       hv_store(hv, Z_STRVAL_P(member), Z_STRLEN_P(member),
                php_perl_zval_to_sv(my_perl, value TSRMLS_CC), 0);
+    } else {
+      zend_error(E_WARNING, "[perl] Object is not a hash");
     }
   }
   if (member == &tmp_member) {
@@ -1053,8 +1078,7 @@ static int php_perl_has_property(zval *object, zval *member, int check_empty TSR
         ALLOC_INIT_ZVAL(zv);
         php_perl_sv_to_zval(my_perl, sv, zv TSRMLS_CC);
         ret = zend_is_true(zv);
-        zval_dtor(zv);
-        FREE_ZVAL(zv);
+        zval_ptr_dtor(&zv);
       } else {
         ret = 1;
       }
@@ -1074,8 +1098,7 @@ static int php_perl_has_property(zval *object, zval *member, int check_empty TSR
           ALLOC_INIT_ZVAL(zv);
           php_perl_sv_to_zval(my_perl, *prop_val, zv TSRMLS_CC);
           ret = zend_is_true(zv);
-          zval_dtor(zv);
-          FREE_ZVAL(zv);
+          zval_ptr_dtor(&zv);
         }
       } else {
         /* isset() */
@@ -1083,6 +1106,8 @@ static int php_perl_has_property(zval *object, zval *member, int check_empty TSR
           ret = 1;
         }
       }
+    } else {
+      zend_error(E_WARNING, "[perl] Object is not a hash");
     }
   }
   if (member == &tmp_member) {
@@ -1124,6 +1149,8 @@ static void php_perl_unset_property(zval *object, zval *member TSRMLS_DC)
     if (SvTYPE(sv) == SVt_PVHV) {
       HV*   hv = (HV*)sv;
       hv_delete(hv, Z_STRVAL_P(member), Z_STRLEN_P(member), G_DISCARD);
+    } else {
+      zend_error(E_WARNING, "[perl] Object is not a hash");
     }
   }
   if (member == &tmp_member) {
@@ -1265,8 +1292,9 @@ static HashTable* php_perl_get_properties(zval *object TSRMLS_DC)
       return ht;
     } else if (active_opline != NULL) {
       /* each() support */
-#define ZSTRCMP(zv,str) ((Z_STRLEN(zv) == sizeof(str)-1) && \
-                         (memcmp(Z_STRVAL(zv), str, sizeof(str)-1) == 0))
+#define ZSTRCMP(zv,str) (zend_binary_strcmp(Z_STRVAL(zv),Z_STRLEN(zv),str,sizeof(str)-1)==0)
+//#define ZSTRCMP(zv,str) ((Z_STRLEN(zv) == sizeof(str)-1) && \
+//                         (memcmp(Z_STRVAL(zv), str, sizeof(str)-1) == 0))
       if (active_opline->opcode == ZEND_DO_FCALL &&
           active_opline->extended_value == 1 &&
           active_opline->op1.op_type == IS_CONST &&
@@ -1328,9 +1356,9 @@ int php_perl_get_class_name(zval *object, char **class_name, zend_uint *class_na
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);
   SV* sv = obj->sv;
   if (sv == NULL) {
-    *class_name = emalloc(5);
+    *class_name = emalloc(sizeof("Perl"));
     strcpy(*class_name,"Perl");
-    *class_name_len = 4;
+    *class_name_len = sizeof("Perl")-1;
     return SUCCESS;
   } else {
     HV* stash;
@@ -1340,10 +1368,10 @@ int php_perl_get_class_name(zval *object, char **class_name, zend_uint *class_na
     if ((stash = SvSTASH(sv)) != NULL) {
       char *name = HvNAME(stash);
       int len = strlen(name);
-      *class_name = emalloc(len+7);
+      *class_name = emalloc(len+sizeof("Perl::"));
       strcpy(*class_name,"Perl::");
-      strcpy((*class_name)+6,name);
-      *class_name_len = len+6;
+      strcpy((*class_name)+sizeof("Perl::")-1,name);
+      *class_name_len = len+sizeof("Perl::")-1;
       return SUCCESS;
     }
   }
@@ -1376,7 +1404,7 @@ static void php_perl_destructor(void *perl_object, zend_object_handle handle TSR
   }
 }
 
-static void php_perl_destructor_ex(void *perl_object, zend_object_handle handle TSRMLS_DC)
+static void php_perl_cleaner(void *perl_object, zend_object_handle handle TSRMLS_DC)
 {
   if (perl_object) {
     php_perl_object *obj = (php_perl_object*)perl_object;
@@ -1466,7 +1494,7 @@ static zend_object_value php_perl_create_object(zend_class_entry *class_type TSR
 /****************************************************************************/
 
 static void php_perl_iterator_dtor(zend_object_iterator *iter TSRMLS_DC);
-static int php_perl_iterator_has_more(zend_object_iterator *iter TSRMLS_DC);
+static int php_perl_iterator_valid(zend_object_iterator *iter TSRMLS_DC);
 static void php_perl_iterator_current_data(zend_object_iterator *iter, zval ***data TSRMLS_DC);
 static int php_perl_iterator_current_key(zend_object_iterator *iter, char **str_key, uint *str_key_len, ulong *int_key TSRMLS_DC);
 static void php_perl_iterator_move_forward(zend_object_iterator *iter TSRMLS_DC);
@@ -1474,7 +1502,7 @@ static void php_perl_iterator_rewind(zend_object_iterator *iter TSRMLS_DC);
 
 zend_object_iterator_funcs php_perl_iterator_funcs = {
   php_perl_iterator_dtor,
-  php_perl_iterator_has_more,
+  php_perl_iterator_valid,
   php_perl_iterator_current_data,
   php_perl_iterator_current_key,
   php_perl_iterator_move_forward,
@@ -1488,7 +1516,7 @@ static void php_perl_iterator_dtor(zend_object_iterator *iterator TSRMLS_DC)
   efree(iterator);
 }
 
-static int php_perl_iterator_has_more(zend_object_iterator *iterator TSRMLS_DC)
+static int php_perl_iterator_valid(zend_object_iterator *iterator TSRMLS_DC)
 {
   zval* object =(zval*)iterator->data;
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);

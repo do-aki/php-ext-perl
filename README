@@ -1,7 +1,7 @@
 What is ext/perl?
 =================
 
-  This extension allows embedding of Perl Interpreter into PHP to:
+  This extension allows embedding of Perl Interpreter into PHP5 to:
     * execute Perl files
     * evaluate Perl code
     * access values of Perl variables
@@ -106,6 +106,6 @@ Known BUGS and limitations
      (print, die, ...).
   *  $obj[0]++; doesn't work (PHP Fatal error)
 
-This extension was testd on RedHat Linux 9.0 with PHP-5.0.0b4-dev (non ZTS build)
+This extension was testd on RedHat Linux 9.0 with PHP 5.0.0RC2-dev (non ZTS build)
 and perl-5.8.0 (installed from RPM) and on Windows 2000 with PHP-5.0.0b4-dev
 (ZTS build) and perl-5.8.0.

@@ -2,21 +2,9 @@
    (see test: 18)
 -? PHP Fatall Error on $perl_object[0]++;
    (see test: 46)
-+  foreach on perl objects
-   (see test: 47, 48)
-+? array context (wantarray)
-+  passing/receiving cyclic data structures (references)
-   (see test: 50, 51, 52, 53)
-+  support for cyclic perl's objects
-   (see test: 54, 55, 56)
-+  output buffering
 -? PHP memory leaks
-   (see tests: 29, 30, 45, 53, 54, 55, 56)
+   (see tests: 53)
 -  Perl memory leaks
 -  *** Warning: Linking the shared library library perl.la against the
    DynaLoader.a is not portable!
-+  testing with Apache
-   (Tested with Apache 2.0.40 (prefork MPM), SAPI: apache2filter)
-+  ZTS compatibility
-+  Windows compatibility
 -? object proxies
