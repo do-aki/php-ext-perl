@@ -37,7 +37,7 @@ PHP API
   Perl->eval($perl_code)
   ----------------------
     Evaluates Perl code and returns result. If Perl code is invalid it will
-    produce PHP error. 
+    throw PHP exception. 
 
     Exampes:
       $perl = new Perl();
@@ -59,7 +59,7 @@ PHP API
   Perl->require($perl_file_name)
   ------------------------------
     Loads and executes Perl file. It doesn't return any value. If required Perl
-    file doesn't exist or invalid it will produce PHP error.
+    file doesn't exist or invalid it will throw PHP exception.
 
     Examples:
       $perl = new Perl();

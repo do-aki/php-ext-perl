@@ -48,6 +48,7 @@
 #include "php.h"
 #include "php_ini.h"
 #include "zend_objects_API.h"
+#include "zend_exceptions.h"
 #include "ext/standard/info.h"
 #include "SAPI.h"
 #include "php_perl.h"
@@ -108,6 +109,7 @@ typedef struct php_perl_object {
 
 
 static zend_class_entry* perl_class_entry;
+static zend_class_entry* perl_exception_class_entry;
 
 /* PHP <-> Perl data conversion routines */
 static SV*  php_perl_zval_to_sv_noref(PerlInterpreter* my_perl, zval* zv, HashTable* var_hash TSRMLS_DC);
@@ -1163,14 +1165,18 @@ static void php_perl_constructor_handler(INTERNAL_FUNCTION_PARAMETERS)
                                         constructor, constructor_len,
                                         argc-2, argv+2 TSRMLS_CC);
 
-    if(SvTRUE(ERRSV)) {
-      STRLEN na;
-      zend_error(E_ERROR, "[perl] constructor error: %s", SvPV(ERRSV, na));
-    }
-
     if (argc > 2) {
       efree(argv);
     }
+
+    if(SvTRUE(ERRSV)) {
+      STRLEN na;
+      zval_ptr_dtor(&object);
+      zend_throw_exception_ex(perl_exception_class_entry, 0 TSRMLS_CC,
+        "[perl] constructor error: %s", SvPV(ERRSV, na));
+      return;
+    }
+
     php_perl_remember_object(obj->sv, object->value.obj.handle TSRMLS_CC);
   }
   zval_ptr_dtor(&object);
@@ -1226,14 +1232,16 @@ static int php_perl_call_function_handler(char *method, INTERNAL_FUNCTION_PARAME
                          return_value_used?return_value:NULL TSRMLS_CC);
   }
 
-  if(SvTRUE(ERRSV)) {
-    STRLEN na;
-    zend_error(E_ERROR, "[perl] call error: %s", SvPV(ERRSV, na));
-  }
-
   zval_ptr_dtor(&object);
   if (argc > 0) {
     efree(argv);
+  }
+
+  if(SvTRUE(ERRSV)) {
+    STRLEN na;
+    zend_throw_exception_ex(perl_exception_class_entry, 0 TSRMLS_CC,
+      "[perl] call error: %s", SvPV(ERRSV, na));
+    return FAILURE;
   }
 
   return SUCCESS;
@@ -1560,6 +1568,9 @@ PHP_MINIT_FUNCTION(perl)
   perl_class_entry = zend_register_internal_class(&perl_ce TSRMLS_CC);
   perl_class_entry->get_iterator = php_perl_get_iterator;
 
+  INIT_CLASS_ENTRY(perl_ce, "PerlException", NULL);
+  perl_exception_class_entry = zend_register_internal_class_ex(&perl_ce, zend_exception_get_default(), NULL TSRMLS_CC);
+
   return SUCCESS;
 }
 
@@ -1576,8 +1587,12 @@ PHP_RSHUTDOWN_FUNCTION(perl)
 
 PHP_MINFO_FUNCTION(perl)
 {
+  PerlInterpreter* my_perl = php_perl_init(TSRMLS_C);
+
   php_info_print_table_start();
-  php_info_print_table_row(2, "perl support", "enabled");
+  php_info_print_table_header(2, "Perl support", "enabled");
+  php_info_print_table_row(2, "Revision", "$Revision$");
+  php_info_print_table_row(2, "Perl version", Perl_form(aTHX_ "%vd",PL_patchlevel));
   php_info_print_table_end();
 }
 
@@ -1597,7 +1612,9 @@ PHP_METHOD(Perl, require)
     require_pv(perl_filename);
     if(SvTRUE(ERRSV)) {
       STRLEN na;
-      zend_error(E_ERROR, "[perl] require error: %s", SvPV(ERRSV, na));
+
+      zend_throw_exception_ex(perl_exception_class_entry, 0 TSRMLS_CC,
+        "[perl] require error: %s", SvPV(ERRSV, na));
     }
   }
 }
@@ -1660,7 +1677,8 @@ PHP_METHOD(Perl, eval)
 
     if (SvTRUE(ERRSV)) {
       STRLEN na;
-      zend_error(E_ERROR, "[perl] eval error: %s", SvPV(ERRSV, na));
+      zend_throw_exception_ex(perl_exception_class_entry, 0 TSRMLS_CC,
+        "[perl] eval error: %s", SvPV(ERRSV, na));
     }
   }
 }
