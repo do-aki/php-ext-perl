@@ -8,6 +8,51 @@ What is ext/perl?
     * call Perl subroutines
     * instantiate and manipulate of Perl objects
 
+Requirements
+============
+  PHP 5.0.0RC2 or later
+  Perl 5.8.0 or later
+
+Quick install
+=============
+
+  Step 1. Compile this extension. PHP_PREFIX and PERL_PREFIX mast point to real
+          PHP and Perl instalation prefixes.
+
+    export PHP_PREFIX="/usr"
+    export PERL_PREFIX="/usr"
+    $PHP_PREFIX/bin/phpize
+    ./configure --with-perl=$PERL_PREFIX --with-php-config=$PHP_PREFIX/bin/php-config
+    make  
+
+  Step 2. Install the extension (this step can require root privileges)
+
+    make install
+
+  Step 3. Add perl extension into your php.ini (this step can require root privileges)
+
+    extension=perl.so
+
+Windows Installation Notes
+==========================
+
+  Step 1. Download ActivePerl binaries for Windows from 
+          http://www.activestate.com/Products/ActivePerl/
+          and install them.
+
+  Step 2. Put this extension into corresponding PHP source tree (into ext/perl)
+
+  Step 3. Compile the extension
+
+    SET PERL_HOME=C:\perl
+    msdev perl.dsp /MAKE "perl - Win32 Release_TS"
+
+  Step 4. Copy php_perl.dll (from Release_TS) to PHP extension dir
+
+  Step 5. Add perl extension into your php.ini
+
+    extension=php_perl.dll
+
 PHP API
 =======
 
@@ -113,5 +158,5 @@ Known BUGS and limitations
      (print, die, ...).
 
 This extension was testd on RedHat Linux 9.0 with PHP 5.0.0RC2-dev (non ZTS build)
-and perl-5.8.0 (installed from RPM) and on Windows 2000 with PHP-5.0.0b4-dev
+and perl-5.8.0 (installed from RPM) and on Windows 2000 with PHP-5.0.0RC2-dev
 (ZTS build) and perl-5.8.0.

@@ -808,7 +808,6 @@ static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS
         }
       }
       if (write && !sv_isobject(*prop_val)) {
-        zend_object_value new_value;
         php_perl_object *obj = (php_perl_object*)emalloc(sizeof(php_perl_object));
 
         obj->zo.ce = perl_class_entry;
@@ -1067,7 +1066,6 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
   
   if (sv != NULL) {
     if (write && !sv_isobject(sv)) {
-      zend_object_value new_value;
       php_perl_object *obj = (php_perl_object*)emalloc(sizeof(php_perl_object));
 
       obj->zo.ce = perl_class_entry;
