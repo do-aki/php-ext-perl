@@ -49,6 +49,7 @@
 #include "php_ini.h"
 #include "zend_objects_API.h"
 #include "zend_exceptions.h"
+#include "zend_extensions.h"
 #include "ext/standard/info.h"
 #include "SAPI.h"
 #include "php_perl.h"
@@ -130,7 +131,11 @@ static void php_perl_unset_property(zval *object, zval *member TSRMLS_DC);
 static int php_perl_has_dimension(zval *object, zval *offset, int check_empty TSRMLS_DC);
 static void php_perl_unset_dimension(zval *object, zval *offset TSRMLS_DC);
 static HashTable* php_perl_get_properties(zval *object TSRMLS_DC);
+#if (ZEND_EXTENSION_API_NO >= 220041030)
+static zend_function *php_perl_get_method(zval **object_ptr, char *method, int method_len TSRMLS_DC);
+#else
 static zend_function *php_perl_get_method(zval *object, char *method, int method_len TSRMLS_DC);
+#endif
 static int php_perl_call_function_handler(char *method, INTERNAL_FUNCTION_PARAMETERS);
 static zend_function *php_perl_get_constructor(zval *object TSRMLS_DC);
 static zend_class_entry* php_perl_get_class_entry(zval *object TSRMLS_DC);
@@ -1365,13 +1370,25 @@ static zend_function *php_perl_get_constructor(zval *object TSRMLS_DC)
 }
 
 /* get_method handler for overloaded Perl objects */
+#if (ZEND_EXTENSION_API_NO >= 220041030)
+static zend_function *php_perl_get_method(zval **object_ptr, char *method, int method_len TSRMLS_DC)
+#else
 static zend_function *php_perl_get_method(zval *object, char *method, int method_len TSRMLS_DC)
+#endif
 {
   zend_internal_function *f;
+#if (ZEND_EXTENSION_API_NO >= 220041030)
+  php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(*object_ptr TSRMLS_CC);
+#else
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);
+#endif
 
   if (obj->sv == NULL) {
+#if (ZEND_EXTENSION_API_NO >= 220041030)
+    zend_function *f = zend_get_std_object_handlers()->get_method(object_ptr, method, method_len TSRMLS_CC);
+#else
     zend_function *f = zend_get_std_object_handlers()->get_method(object, method, method_len TSRMLS_CC);
+#endif
     if (f) {
       return f;
     }
