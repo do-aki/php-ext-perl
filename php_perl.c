@@ -121,7 +121,7 @@ static zval* php_perl_sv_to_zval(PerlInterpreter* my_perl, SV* sv, zval* zv TSRM
 
 /* Handlers for Perl objects overloading */
 static zend_object_value php_perl_clone(zval *object TSRMLS_DC);
-static zval* php_perl_read_property(zval *object, zval *member, zend_bool silent TSRMLS_DC);
+static zval* php_perl_read_property(zval *object, zval *member, int silent TSRMLS_DC);
 static void php_perl_write_property(zval *object, zval *member, zval *value TSRMLS_DC);
 static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS_DC);
 static void php_perl_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC);
@@ -826,7 +826,7 @@ static void php_perl_unset_dimension(zval *object, zval *offset TSRMLS_DC)
 }
 
 /* Returns propery of hash based Perl's object */
-static zval* php_perl_read_property(zval *object, zval *member, zend_bool silent TSRMLS_DC)
+static zval* php_perl_read_property(zval *object, zval *member, int silent TSRMLS_DC)
 {
   PerlInterpreter* my_perl = php_perl_init(TSRMLS_C);
   zval *retval = NULL;
@@ -1695,7 +1695,7 @@ zend_module_entry perl_module_entry = {
   PHP_RSHUTDOWN(perl),
   PHP_MINFO(perl),
 #if ZEND_MODULE_API_NO >= 20010901
-  "0.6",
+  "0.7-dev",
 #endif
   STANDARD_MODULE_PROPERTIES
 };
