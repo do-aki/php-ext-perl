@@ -8,6 +8,7 @@ if test "$PHP_PERL" != "no"; then
   for i in $PHP_PERL /usr/local /usr; do
     if test -x $i/bin/perl; then
       PERL_DIR=$i
+      break
     fi
   done
 
