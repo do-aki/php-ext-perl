@@ -4,7 +4,8 @@ Test 51: PHP's references support
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 sub f {
   \$x = shift(@_);
   \$x->[0] = 3;
@@ -18,7 +19,7 @@ $x[1] =& $x[0];
 var_dump($x);
 $x[0] = 2;
 var_dump($x);
-$x = perl_call("f",$x);
+$x = $perl->f($x);
 var_dump($x);
 $x[1] = 4;
 var_dump($x);

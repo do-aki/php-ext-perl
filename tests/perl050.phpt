@@ -4,7 +4,8 @@ Test 50: Perl's references support
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-$x = perl_eval(<<<PERL_END
+$perl = new Perl();
+$x = $perl->eval(<<<PERL_END
   \$x = [1];
   \$x->[1] = \\\$x->[0];
   return \$x;

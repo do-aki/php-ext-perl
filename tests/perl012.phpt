@@ -4,7 +4,8 @@ Test 12: calling perl user function
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 sub f_integer {
   return 5;
 }
@@ -24,11 +25,11 @@ sub f_hash {
 }
 PERL_END
 );
-var_dump(perl_call("f_integer"));
-var_dump(perl_call("f_double"));
-var_dump(perl_call("f_string"));
-var_dump(perl_call("f_array"));
-var_dump(perl_call("f_hash"));
+var_dump($perl->f_integer());
+var_dump($perl->f_double());
+var_dump($perl->f_string());
+var_dump($perl->f_array());
+var_dump($perl->f_hash());
 echo "ok\n";
 ?>
 --EXPECT--

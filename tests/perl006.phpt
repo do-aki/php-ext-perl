@@ -1,10 +1,11 @@
 --TEST--
-Test 6: returning hash value from perl_eval()
+Test 6: returning hash value from eval()
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-var_dump(perl_eval('{"int"=>1,"double"=>3.5,"string"=>"string"};'));
+$perl = new Perl();
+var_dump($perl->eval('{"int"=>1,"double"=>3.5,"string"=>"string"};'));
 echo "ok\n";
 ?>
 --EXPECT--

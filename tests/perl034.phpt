@@ -4,7 +4,8 @@ Test 34: passing object argument to user function
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -20,18 +21,12 @@ package main;
   }
 PERL_END
 );
-perl_call("f", new Perl('Foo'));
-var_dump(perl_var('$var'));
-perl_call_array("f", array(new Perl('Foo')));
-var_dump(perl_var('$var'));
+$perl->f(new Perl('Foo'));
+var_dump($perl->var);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
-  ["x"]=>
-  int(12)
-}
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["x"]=>
   int(12)
 }

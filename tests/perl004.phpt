@@ -1,13 +1,14 @@
 --TEST--
-Test 4: returning scalar value from perl_eval()
+Test 4: returning scalar value from eval()
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-var_dump(perl_eval(''));
-var_dump(perl_eval('5+3;'));
-var_dump(perl_eval('5.5+3.2;'));
-var_dump(perl_eval('reverse "0123456789";'));
+$perl = new Perl();
+var_dump($perl->eval(''));
+var_dump($perl->eval('5+3;'));
+var_dump($perl->eval('5.5+3.2;'));
+var_dump($perl->eval('reverse "0123456789";'));
 echo "ok\n";
 ?>
 --EXPECT--

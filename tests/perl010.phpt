@@ -1,11 +1,12 @@
 --TEST--
-Test 10: accessing hash perl variables (perl_var)
+Test 10: accessing hash perl variables
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('%a = ("int" => 4, "double" => 2.5, "str" => "str");');
-var_dump(perl_var('%a'));
+$perl = new Perl();
+$perl->eval('%a = ("int" => 4, "double" => 2.5, "str" => "str");');
+var_dump($perl->hash->a);
 echo "ok\n";
 ?>
 --EXPECT--

@@ -1,15 +1,16 @@
 --TEST--
-Test 8: accessing scalar perl variables (perl_var)
+Test 8: accessing scalar perl variables
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('$a = 5;');
-var_dump(perl_var('$a'));
-perl_eval('$a = 2.5;');
-var_dump(perl_var('$a'));
-perl_eval('$a = "str";');
-var_dump(perl_var('$a'));
+$perl = new Perl();
+$perl->eval('$a = 5;');
+var_dump($perl->a);
+$perl->eval('$a = 2.5;');
+var_dump($perl->a);
+$perl->eval('$a = "str";');
+var_dump($perl->a);
 echo "ok\n";
 ?>
 --EXPECT--

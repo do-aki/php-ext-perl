@@ -4,7 +4,8 @@ Test 49: creating and using perl objects from external module
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('use Digest::MD5;');
+$perl = new Perl();
+$perl->eval('use Digest::MD5;');
 $ctx = new Perl('Digest::MD5');
 $ctx->add("Hello");
 echo $ctx->hexdigest()."\n";

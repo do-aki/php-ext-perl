@@ -4,7 +4,8 @@ Test 28: setting scalar object's properties
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -25,7 +26,7 @@ var_dump($foo);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (3) {
+object(Perl::Foo)#2 (3) {
   ["float"]=>
   float(2.5)
   ["str"]=>

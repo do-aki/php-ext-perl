@@ -1,10 +1,11 @@
 --TEST--
-Test 3: perl_eval
+Test 3: eval
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('print "ok\n";');
+$perl = new Perl();
+$perl->eval('print "ok\n";');
 echo "ok\n";
 ?>
 --EXPECT--

@@ -4,37 +4,25 @@ Test 59: Calling perl subroutine in array context
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 sub f {
   return ("Hello", "World");
 }
-END
+PERL_END
 );
-$a = perl_call("f");
+$a = $perl->f();
 var_dump($a);
-perl_wantarray();
-$a = perl_call("f");
-var_dump($a);
-$a = perl_call("f");
-var_dump($a);
-perl_wantarray();
-$a = perl_call_array("f", array());
+$a = $perl->array->f();
 var_dump($a);
 echo "ok\n";
 ?>
 --EXPECT--
 string(5) "World"
 array(2) {
-  [1]=>
+  [0]=>
   string(5) "Hello"
-  [2]=>
-  string(5) "World"
-}
-string(5) "World"
-array(2) {
   [1]=>
-  string(5) "Hello"
-  [2]=>
   string(5) "World"
 }
 ok

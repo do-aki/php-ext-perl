@@ -4,7 +4,8 @@ Test 31: setting object object's property
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Bar;
   sub new {
     my \$this = shift;
@@ -32,9 +33,9 @@ var_dump($foo);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["bar"]=>
-  object(Perl::Bar)#2 (1) {
+  object(Perl::Bar)#3 (1) {
     ["x"]=>
     int(2)
   }

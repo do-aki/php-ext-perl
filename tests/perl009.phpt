@@ -1,11 +1,12 @@
 --TEST--
-Test 9: accessing array perl variables (perl_var)
+Test 9: accessing array perl variables
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('@a = (4, 2.5, "str");');
-var_dump(perl_var('@a'));
+$perl = new Perl();
+$perl->eval('@a = (4, 2.5, "str");');
+var_dump($perl->array->a);
 echo "ok\n";
 ?>
 --EXPECT--

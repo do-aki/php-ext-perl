@@ -1,5 +1,5 @@
 --TEST--
-Test 43: clearing clearing elements of array based object with unset()
+Test 69: Method call in scalar/array/hash context
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
@@ -11,25 +11,36 @@ package Foo;
     my \$this = shift;
     my \$type = ref(\$this) || \$this;
     my \$self = [];
-    \$self->[0] = 1;
-    \$self->[1] = 2;
-    \$self->[3] = 3;
     bless \$self, \$type;
     return \$self;
+  }
+  sub f {
+    return ("a","b","c");
   }
 package main;
 PERL_END
 );
-$x = new Perl('Foo');
-unset($x[1]);
-var_dump($x);
+
+$obj = new Perl("Foo");
+var_dump($obj->f());
+var_dump($obj->array->f());
+var_dump($obj->hash->f());
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#2 (2) {
+string(1) "c"
+array(3) {
   [0]=>
-  int(1)
-  [3]=>
-  int(3)
+  string(1) "a"
+  [1]=>
+  string(1) "b"
+  [2]=>
+  string(1) "c"
+}
+array(2) {
+  ["a"]=>
+  string(1) "b"
+  ["c"]=>
+  NULL
 }
 ok

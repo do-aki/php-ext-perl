@@ -1,16 +1,15 @@
 --TEST--
-Test 18: calling internal Perl function
+Test 18: calling internal Perl function (not implemented by pecl/perl)
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval('print "Hello\n"');
-perl_call('print', "Hello\n");
-perl_call_array('print', array("Hello\n"));
+$perl = new Perl();
+$perl->eval('print "Hello\n"');
+$perl->print("Hello\n");
 echo "ok\n";
 ?>
 --EXPECT--
-Hello
 Hello
 Hello
 ok

@@ -1,10 +1,11 @@
 --TEST--
-Test 21: returning object from perl_eval()
+Test 21: returning object from eval()
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -26,16 +27,16 @@ package Bar;
 package main;
 PERL_END
 );
-var_dump(perl_eval('Foo->new()'));
-var_dump(perl_eval('Bar::new("Bar")'));
+var_dump($perl->eval('Foo->new()'));
+var_dump($perl->eval('Bar::new("Bar")'));
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["x"]=>
   int(12)
 }
-object(Perl::Bar)#1 (1) {
+object(Perl::Bar)#2 (1) {
   ["y"]=>
   int(8)
 }

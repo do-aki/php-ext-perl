@@ -1,10 +1,11 @@
 --TEST--
-Test 5: returning array value from perl_eval()
+Test 5: returning array value from eval()
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-var_dump(perl_eval('[1,2.5,"string"];'));
+$perl = new Perl();
+var_dump($perl->eval('[1,2.5,"string"];'));
 echo "ok\n";
 ?>
 --EXPECT--

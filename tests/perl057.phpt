@@ -10,17 +10,18 @@ function xxx($str) {
 ob_start("xxx");
 
 echo "PHP echo 1\n";
-perl_eval(<<<END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 format STDOUT =
 Perl's write
 .
 write;
-END
+PERL_END
 );
 echo "PHP echo 2\n";
-perl_eval("print \"Perl's print\n\";");
+$perl->eval("print \"Perl's print\n\";");
 echo "PHP echo 3\n";
-perl_eval("printf \"Perl's printf\n\";");
+$perl->eval("printf \"Perl's printf\n\";");
 echo "PHP echo 4\n";
 ?>
 --EXPECT--

@@ -4,7 +4,8 @@ Test 41: setting elements of array based perl object
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -26,7 +27,7 @@ var_dump($x);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (3) {
+object(Perl::Foo)#2 (3) {
   [0]=>
   int(3)
   [1]=>

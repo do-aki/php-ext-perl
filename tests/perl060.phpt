@@ -4,7 +4,8 @@ Test 60: Calling perl method in array context
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -22,13 +23,12 @@ package Foo;
       return 0;
     }
   }
-END
+PERL_END
 );
 $foo = new Perl("Foo");
 $a = $foo->f();
 var_dump($a);
-perl_wantarray();
-$a = $foo->f();
+$a = $foo->array->f();
 var_dump($a);
 $a = $foo->f();
 var_dump($a);
@@ -37,9 +37,9 @@ echo "ok\n";
 --EXPECT--
 int(0)
 array(2) {
-  [1]=>
+  [0]=>
   string(5) "Hello"
-  [2]=>
+  [1]=>
   string(5) "World"
 }
 int(0)

@@ -4,7 +4,8 @@ Test 23: creating new Perl objects
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -42,15 +43,15 @@ var_dump($foo);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["x"]=>
   int(11)
 }
-object(Perl::Foo)#2 (1) {
+object(Perl::Foo)#3 (1) {
   ["x"]=>
   int(12)
 }
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["x"]=>
   int(13)
 }

@@ -4,7 +4,8 @@ Test 36: clearing object properies with unset()
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-perl_eval(<<<PERL_END
+$perl = new Perl();
+$perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -24,7 +25,7 @@ var_dump($x);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["p1"]=>
   int(1)
 }

@@ -4,7 +4,8 @@ Test 54: Perl's cyclic object structures support
 <?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
-$x = perl_eval(<<<PERL_END
+$perl = new Perl();
+$x = $perl->eval(<<<PERL_END
 package Foo;
   sub new {
     my \$this = shift;
@@ -25,18 +26,18 @@ var_dump($x);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#1 (1) {
+object(Perl::Foo)#2 (1) {
   ["foo"]=>
-  object(Perl::Foo)#1 (1) {
+  object(Perl::Foo)#2 (1) {
     ["foo"]=>
     *RECURSION*
   }
 }
-object(Perl::Foo)#1 (2) {
+object(Perl::Foo)#2 (2) {
   ["x"]=>
   int(1)
   ["foo"]=>
-  object(Perl::Foo)#1 (2) {
+  object(Perl::Foo)#2 (2) {
     ["x"]=>
     int(1)
     ["foo"]=>
