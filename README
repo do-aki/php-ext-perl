@@ -98,8 +98,6 @@ Known BUGS and limitations
   *  perl_call and perl_call_array() can't call internal Perl functions
      (print, die, ...).
   *  $obj[0]++; doesn't work (PHP Fatal error)
-  *  all subroutines called in scalar context
-     (calling in array context is not implemented)
 
 This extension was testd on RedHat Linux 9.0 with PHP-5.0.0b3-dev (non ZTS build)
 and perl-5.8.0 (installed from RPM).
