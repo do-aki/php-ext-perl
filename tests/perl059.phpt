@@ -3,7 +3,7 @@ Test 59: Calling perl subroutine in array context
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
-<?
+<?php
 perl_eval(<<<END
 sub f {
   return ("Hello", "World");

@@ -3,7 +3,7 @@ Test 60: Calling perl method in array context
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
-<?
+<?php
 perl_eval(<<<END
 package Foo;
   sub new {
