@@ -1,10 +1,7 @@
 -? call internal Perl functions (print)
    (see test: 18)
--? PHP Fatall Error on $perl_object[0]++;
-   (see test: 46)
 -? PHP memory leaks
    (see tests: 53)
 -  Perl memory leaks
 -  *** Warning: Linking the shared library library perl.la against the
    DynaLoader.a is not portable!
--? object proxies

@@ -1,5 +1,5 @@
 --TEST--
-Test 46: modifying element of array based object (not implemented by ZE2)
+Test 46: modifying element of array based object
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
 --FILE--
