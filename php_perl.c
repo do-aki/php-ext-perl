@@ -37,6 +37,7 @@
 #include <EXTERN.h>               /* from the Perl distribution */
 #include <perl.h>                 /* from the Perl distribution */
 #include <perliol.h>              /* from the Perl distribution */
+#include <perlapi.h>              /* from the Perl distribution */
 
 //#include <XSUB.h>                 /* from the Perl distribution */
 
