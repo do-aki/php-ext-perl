@@ -1,0 +1,105 @@
+What is ext/perl?
+=================
+
+  This extension allows embedding of Perl Interpreter into PHP to:
+    * execute Perl files
+    * evaluate Perl code
+    * read values of Perl variables
+    * call Perl subroutines
+    * instantiate and manipulate of Perl objects
+
+PHP API
+=======
+
+  perl_require($perl_file_name)
+  -----------------------------
+    Loads and executes Perl file. It doesn't return any value. If required Perl
+    file doesn't exist or invalid it will produce PHP error.
+
+    Examples:
+      perl_require('test.pl');
+
+  perl_eval($perl_code)
+  ---------------------
+    Evaluates Perl code and returns result. If Perl code is invalid it will
+    produce PHP error. The Perl code is evaluated in scalar context.
+
+    Exampes:
+      perl_eval('require "test.pl";');
+      echo perl_eval($x.'+'.$y.';');
+      perl_eval('$z='.$x.'+'.$y.';');
+
+  perl_var($perl_variable_name)
+  -----------------------------
+     Returns value of perl variable. The first character of variable name mast
+     be '$' for scalar Perl variables, '@' for arrays and '%' for hashes.
+     Function will produce PHP notice if requested variable is not defined.
+
+     Examples:
+       perl_eval('$z='.$x.'+'.$y.';'); echo perl_var('$z');
+
+  perl_call($perl_func, ...)
+  --------------------------
+     Calls Perl subroutine with parameters and returns result.
+     IT CANN'T CALL INTERNAL PERL FUNCTIONS (print, die, ...).
+     It can call subroutines written in Perl or subroutines from external
+     modules. External modules can be loaded at runtime.
+     The Perl subroutine is called in scalar context.
+
+     Examles:
+       perl_call('sum',1,2,3,4,5);
+
+       perl_eval('use Digest::MD5');
+       echo perl_call('Digest::MD5::md5_hex','Hello');
+
+  perl_call_array($perl_func, $arguments_array)
+  ---------------------------------------------
+     It does the same as perl_call(), but it receives arguments as array.
+
+     Examples:
+       perl_call('sum', array(1,2,3,4,5));
+
+  new Perl($perl_class_name, $constructor = "new", ...)
+  -----------------------------------------------------
+    Creates an instance of Perl class through calling specified constructor
+    or "new" if constructor is not specified. Additional parameters passed
+    to Perl's constructor. The created object allows:
+
+    * reading and modifying of object properties
+    * calling methods
+    * cloning
+
+     Examples:
+       $x = new Perl("Test");
+       $y = new Perl("Test","copy",$x);
+       $z = $y->__clone();
+       echo $z->property;
+       echo $z->method(1,2,3);
+
+  perl_wantarray($wantarray=1)
+  ----------------------------
+  Sets wantarray flag for next call of Perl's subroutine or method. The flag
+  has effect only on first call after it.
+
+    Example:
+       $x = new Perl("Test");
+       $y = $x->f();         // scalar context;
+       perl_wantarray();
+       $y = $x->f();         // array context;
+       $y = $x->f();         // scalar context;
+
+Known BUGS and limitations
+==========================
+  *  Perl objects passed between Perl and PHP by reference all other data type
+     (including arrays and hashes) passed by value. So modification of Perl's
+     arrays and hashes in PHP will not have effect in Perl.
+     $x = perl_var('@array');
+     $x[0] = 1; // Perl's @array still unmodifyed
+  *  perl_call and perl_call_array() can't call internal Perl functions
+     (print, die, ...).
+  *  $obj[0]++; doesn't work (PHP Fatal error)
+  *  all subroutines called in scalar context
+     (calling in array context is not implemented)
+
+This extension was testd on RedHat Linux 9.0 with PHP-5.0.0b3-dev (non ZTS build)
+and perl-5.8.0 (installed from RPM).

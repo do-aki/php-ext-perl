@@ -1,0 +1,16 @@
+// $Id$
+// config.w32 for extension perl
+
+ARG_WITH("perl", "Perl support (where to find Perl interpriter)", "no");
+
+if (PHP_PERL != "no") {
+  if (CHECK_LIB("perl58.lib", "perl", PHP_PERL) &&
+      CHECK_HEADER_ADD_INCLUDE("perl.h", "CFLAGS_PERL", PHP_PERL)) {
+    EXTENSION("perl", "php_perl.c");
+    AC_DEFINE("HAVE_PERL", 1, "Perl support");
+
+    ADD_FLAG("CFLAGS_PERL", "/DHAVE_PERL /D_CONSOLE /DNO_STRICT /DPERL_IMLICIT_CONTEXT /DPERL_IMPLICIT_SYS /DUSE_PERLIO /DPERL_MSVCRT_READFIX");
+  } else {
+    WARNING("perl not enabled; libraries and headers not found");
+  }
+}
