@@ -167,6 +167,7 @@ static zend_object_handlers php_perl_object_handlers = {
   php_perl_get_class_name,         /* get_class_name */
   NULL,                            /* compare_objects */
   NULL,                            /* cast_object */
+  NULL,                            /* count_elements */
 };
 
 static zend_object_handlers php_perl_proxy_handlers = {
@@ -193,6 +194,7 @@ static zend_object_handlers php_perl_proxy_handlers = {
   php_perl_get_class_name,         /* get_class_name */
   NULL,                            /* compare_objects */
   NULL,                            /* cast_object */
+  NULL,                            /* count_elements */
 };
 
 zend_internal_function php_perl_constructor_function = {
