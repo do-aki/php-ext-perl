@@ -15,5 +15,6 @@ echo "ok\n";
 Fatal error: Uncaught exception 'PerlException' with message '[perl] eval error: 	(in cleanup) Bye bye! at (eval %d) line %d.
 ' in %sperl020.php:%d
 Stack trace:
-#0 {main}
+#0 %sperl020.php(6): Perl->eval('%s')
+#1 {main}
   thrown in %sperl020.php on line %d
