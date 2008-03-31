@@ -25,6 +25,8 @@
 extern zend_module_entry perl_module_entry;
 #define phpext_perl_ptr &perl_module_entry
 
+#define PHP_PERL_VERSION "1.0.1-dev"
+
 #ifdef PHP_WIN32
 #define PHP_PERL_API __declspec(dllexport)
 #else

@@ -1805,6 +1805,7 @@ PHP_MINFO_FUNCTION(perl)
 
   php_info_print_table_start();
   php_info_print_table_header(2, "Perl support", "enabled");
+  php_info_print_table_row(2, "Extension version", PHP_PERL_VERSION);
   php_info_print_table_row(2, "Revision", "$Revision$");
   php_info_print_table_row(2, "Perl version", Perl_form(aTHX_ "%vd",PL_patchlevel));
   php_info_print_table_end();
@@ -1909,7 +1910,7 @@ zend_module_entry perl_module_entry = {
   PHP_RSHUTDOWN(perl),
   PHP_MINFO(perl),
 #if ZEND_MODULE_API_NO >= 20010901
-  "0.7",
+  PHP_PERL_VERSION,
 #endif
   STANDARD_MODULE_PROPERTIES
 };
