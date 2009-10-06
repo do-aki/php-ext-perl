@@ -55,6 +55,35 @@
 #include "SAPI.h"
 #include "php_perl.h"
 
+#ifndef Z_ISREF
+# define Z_REFCOUNT_PP(ppz)				Z_REFCOUNT_P(*(ppz))
+# define Z_SET_REFCOUNT_PP(ppz, rc)		Z_SET_REFCOUNT_P(*(ppz), rc)
+# define Z_ADDREF_PP(ppz)				Z_ADDREF_P(*(ppz))
+# define Z_DELREF_PP(ppz)				Z_DELREF_P(*(ppz))
+# define Z_ISREF_PP(ppz)				Z_ISREF_P(*(ppz))
+# define Z_SET_ISREF_PP(ppz)			Z_SET_ISREF_P(*(ppz))
+# define Z_UNSET_ISREF_PP(ppz)			Z_UNSET_ISREF_P(*(ppz))
+# define Z_SET_ISREF_TO_PP(ppz, isref)	Z_SET_ISREF_TO_P(*(ppz), isref)
+
+# define Z_REFCOUNT_P(pz)				(pz)->refcount
+# define Z_SET_REFCOUNT_P(pz, rc)		do {(pz)->refcount = (rc);} while(0)
+# define Z_ADDREF_P(pz)					++(pz)->refcount
+# define Z_DELREF_P(pz)					--(pz)->refcount
+# define Z_ISREF_P(pz)					(pz)->is_ref
+# define Z_SET_ISREF_P(pz)				do {(pz)->is_ref = 1;} while(0)
+# define Z_UNSET_ISREF_P(pz)			do {(pz)->is_ref = 1;} while(0)
+# define Z_SET_ISREF_TO_P(pz, isref)	do {(pz)->is_ref = (isref);} while(0)
+
+# define Z_REFCOUNT(z)					Z_REFCOUNT_P(&(z))
+# define Z_SET_REFCOUNT(z, rc)			Z_SET_REFCOUNT_P(&(z), rc)
+# define Z_ADDREF(z)					Z_ADDREF_P(&(z))
+# define Z_DELREF(z)					Z_DELREF_P(&(z))
+# define Z_ISREF(z)						Z_ISREF_P(&(z))
+# define Z_SET_ISREF(z)					Z_SET_ISREF_P(&(z))
+# define Z_UNSET_ISREF(z)				Z_UNSET_ISREF_P(&(z))
+# define Z_SET_ISREF_TO(z, isref)		Z_SET_ISREF_TO_P(&(z), isref)
+#endif
+
 ZEND_BEGIN_MODULE_GLOBALS(perl)
   PerlInterpreter *perl;
   HashTable       perl_objects; /* this hash is used to make one to one
@@ -139,8 +168,8 @@ static zend_function *php_perl_get_method(zval *object, char *method, int method
 #endif
 static int php_perl_call_function_handler(char *method, INTERNAL_FUNCTION_PARAMETERS);
 static zend_function *php_perl_get_constructor(zval *object TSRMLS_DC);
-static zend_class_entry* php_perl_get_class_entry(zval *object TSRMLS_DC);
-static int php_perl_get_class_name(zval *object, char **class_name, zend_uint *class_name_len, int parent TSRMLS_DC);
+static zend_class_entry* php_perl_get_class_entry(const zval *object TSRMLS_DC);
+static int php_perl_get_class_name(const zval *object, char **class_name, zend_uint *class_name_len, int parent TSRMLS_DC);
 static zval* php_perl_get(zval *object TSRMLS_DC);
 static void php_perl_set(zval **object, zval *value TSRMLS_DC);
 
@@ -340,14 +369,14 @@ static SV* php_perl_zval_to_sv_ref(PerlInterpreter *my_perl,
 {
   SV* sv;
 
-  if ((zv->is_ref || Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_ARRAY) &&
+  if ((Z_ISREF_P(zv) || Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_ARRAY) &&
       zend_hash_find(var_hash, (char*)zv, sizeof(zv), (void**)&sv) == SUCCESS) {
     sv = *(SV**)sv;
     SvREFCNT_inc(sv);
     return sv;
   }
   sv = php_perl_zval_to_sv_noref(my_perl, zv, var_hash TSRMLS_CC);
-  if (zv->is_ref || Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_ARRAY) {
+  if (Z_ISREF_P(zv) || Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_ARRAY) {
     zend_hash_add(var_hash, (char*)zv, sizeof(zv), &sv, sizeof(SV*), NULL);
   }
   return sv;
@@ -390,7 +419,7 @@ static SV* php_perl_zval_to_sv_noref(PerlInterpreter *my_perl,
         SV* sv = (SV*)newRV((SV*)hv);
         zval** zv_ptr;
 
-        if (zv->is_ref || Z_TYPE_P(zv) == IS_ARRAY) {
+        if (Z_ISREF_P(zv) || Z_TYPE_P(zv) == IS_ARRAY) {
           zend_hash_add(var_hash, (char*)zv, sizeof(zv), &sv, sizeof(SV*), NULL);
         }
 
@@ -420,7 +449,7 @@ static SV* php_perl_zval_to_sv_noref(PerlInterpreter *my_perl,
         SV* sv = (SV*)newRV((SV*)av);
         zval** zv_ptr;
 
-        if (zv->is_ref || Z_TYPE_P(zv) == IS_ARRAY) {
+        if (Z_ISREF_P(zv) || Z_TYPE_P(zv) == IS_ARRAY) {
           zend_hash_add(var_hash, (char*)zv, sizeof(zv), &sv, sizeof(SV*), NULL);
         }
 
@@ -480,9 +509,9 @@ static zval* php_perl_sv_to_zval_ref(PerlInterpreter *my_perl,
       FREE_ZVAL(zv);
     }
     if (Z_TYPE_PP(z) != IS_OBJECT) {
-      (*z)->is_ref = 1;
+      Z_SET_ISREF_PP(z);
     }
-    (*z)->refcount++;
+    Z_ADDREF_PP(z);
     return *z;
   }
 
@@ -750,7 +779,7 @@ static zval* php_perl_get(zval *object TSRMLS_DC)
   }
   retval = php_perl_sv_to_zval(my_perl, obj->sv, NULL TSRMLS_CC);
   /* ensure we're creating a temporary variable */
-  if (retval) {retval->refcount = 0;}
+  if (retval) {Z_SET_REFCOUNT_P(retval, 0);}
   return retval;
 }
 
@@ -824,16 +853,16 @@ static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS
         obj->context = PERL_SCALAR;
 
         ALLOC_INIT_ZVAL(retval);
-        retval->refcount = 0;
-        retval->is_ref = 1;
-        retval->type = IS_OBJECT;
+        Z_SET_REFCOUNT_P(retval, 0);
+        Z_SET_ISREF_P(retval);
+        Z_TYPE_P(retval) = IS_OBJECT;
         Z_OBJ_HT_P(retval) = &php_perl_proxy_handlers;
         Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);        
       } else {
         ALLOC_INIT_ZVAL(retval);
         retval = php_perl_sv_to_zval(my_perl, *prop_val, retval TSRMLS_CC);
         /* ensure we're creating a temporary variable */
-        if (retval) {retval->refcount = 0;}
+        if (retval) {Z_SET_REFCOUNT_P(retval, 0);}
       }
     }
   } else if (SvTYPE(sv) == SVt_PVHV) {
@@ -973,8 +1002,8 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
-      new_object->refcount = 0;
-      new_object->type = IS_OBJECT;
+      Z_SET_REFCOUNT_P(new_object, 0);
+      Z_TYPE_P(new_object) = IS_OBJECT;
       new_object->value.obj.handlers = &php_perl_object_handlers;
       new_object->value.obj.handle =
         zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
@@ -990,8 +1019,8 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
-      new_object->refcount = 0;
-      new_object->type = IS_OBJECT;
+      Z_SET_REFCOUNT_P(new_object, 0);
+      Z_TYPE_P(new_object) = IS_OBJECT;
       new_object->value.obj.handlers = &php_perl_object_handlers;
       new_object->value.obj.handle =
         zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
@@ -1007,8 +1036,8 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       new_obj->properties = NULL;
 
       ALLOC_INIT_ZVAL(new_object);
-      new_object->refcount = 0;
-      new_object->type = IS_OBJECT;
+      Z_SET_REFCOUNT_P(new_object, 0);
+      Z_TYPE_P(new_object) = IS_OBJECT;
       new_object->value.obj.handlers = &php_perl_object_handlers;
       new_object->value.obj.handle =
         zend_objects_store_put(new_obj, php_perl_cleaner, NULL, NULL TSRMLS_CC);
@@ -1085,15 +1114,15 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       obj->context = PERL_SCALAR;
 
       ALLOC_INIT_ZVAL(retval);
-      retval->refcount = 0;
-      retval->is_ref = 1;
-      retval->type = IS_OBJECT;
+      Z_SET_REFCOUNT_P(retval, 0);
+      Z_SET_ISREF_P(retval);
+      Z_TYPE_P(retval) = IS_OBJECT;
       Z_OBJ_HT_P(retval) = &php_perl_proxy_handlers;
       Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);        
     } else {
       retval = php_perl_sv_to_zval(my_perl, sv, retval TSRMLS_CC);
       /* ensure we're creating a temporary variable */
-      if (retval) {retval->refcount = 0;}
+      if (retval) {Z_SET_REFCOUNT_P(retval, 0);}
     }
   }
 
@@ -1518,7 +1547,7 @@ static HashTable* php_perl_get_properties(zval *object TSRMLS_DC)
 }
 
 /* Returns class name of overloaded Perl's object */
-static int php_perl_get_class_name(zval *object, char **class_name, zend_uint *class_name_len, int parent TSRMLS_DC)
+static int php_perl_get_class_name(const zval *object, char **class_name, zend_uint *class_name_len, int parent TSRMLS_DC)
 {
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);
   SV* sv = obj->sv;
@@ -1561,7 +1590,7 @@ static int php_perl_get_class_name(zval *object, char **class_name, zend_uint *c
 }
 
 /* Returns class_entry of overloaded Perl's objects */
-static zend_class_entry* php_perl_get_class_entry(zval *object TSRMLS_DC)
+static zend_class_entry* php_perl_get_class_entry(const zval *object TSRMLS_DC)
 {
   return perl_class_entry;
 }
@@ -1752,10 +1781,14 @@ static void php_perl_iterator_rewind(zend_object_iterator *iterator TSRMLS_DC)
   }
 }
 
+#if PHP_VERSION_ID >= 50200
+zend_object_iterator *php_perl_get_iterator(zend_class_entry *ce, zval *object, int by_ref TSRMLS_DC)
+#else
 zend_object_iterator *php_perl_get_iterator(zend_class_entry *ce, zval *object TSRMLS_DC)
+#endif
 {
   zend_object_iterator *iterator = emalloc(sizeof(zend_object_iterator));
-  object->refcount++;
+  Z_ADDREF_P(object);
   iterator->data = (void*)object;
   iterator->funcs = &php_perl_iterator_funcs;
 
