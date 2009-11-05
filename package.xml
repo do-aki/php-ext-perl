@@ -1,115 +1,130 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<package version="1.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
  <name>perl</name>
+ <channel>pecl.php.net</channel>
  <summary>Embedded Perl.</summary>
- <description>
-  This extension embeds Perl Interpreter into PHP. It allows execute Perl files, evaluate Perl code, access Perl variables and instantiate Perl objects.
+ <description>This extension embeds Perl Interpreter into PHP. It allows execute Perl files, evaluate Perl code, access Perl variables and instantiate Perl objects.
  </description>
- <license>PHP</license>
- <maintainers>
-  <maintainer>
-   <user>dmitry</user>
-   <name>Dmitry Stogov</name>
-   <email>dmitry@zend.com</email>
-   <role>lead</role>
-  </maintainer>
- </maintainers>
-
- <release>
-  <version>0.7</version>
-  <date>2004-11-15</date>
-  <state>stable</state>
-  <notes>
-  </notes>
-  <filelist>
-   <dir name="/" baseinstalldir="perl">
-    <file role="doc">CREDITS</file>
-    <file role="doc">EXPERIMENTAL</file>
-    <file role="doc">README</file>
-    <file role="doc">TODO</file>
-    <file role="src">php_perl.h</file>
-    <file role="src">php_perl.c</file>
-    <file role="src">perl.dsp</file>
-    <file role="src">config.m4</file>
-    <file role="src">config.w32</file>
-    <dir name="tests" role="test">
-     <file role="test">skipif.inc</file>
-     <file role="test">perl001.pl</file>
-     <file role="test">perl001.phpt</file>
-     <file role="test">perl002.phpt</file>
-     <file role="test">perl003.phpt</file>
-     <file role="test">perl004.phpt</file>
-     <file role="test">perl005.phpt</file>
-     <file role="test">perl006.phpt</file>
-     <file role="test">perl007.phpt</file>
-     <file role="test">perl008.phpt</file>
-     <file role="test">perl009.phpt</file>
-     <file role="test">perl010.phpt</file>
-     <file role="test">perl011.phpt</file>
-     <file role="test">perl012.phpt</file>
-     <file role="test">perl013.phpt</file>
-     <file role="test">perl014.phpt</file>
-     <file role="test">perl015.phpt</file>
-     <file role="test">perl016.phpt</file>
-     <file role="test">perl017.phpt</file>
-     <file role="test">perl018.phpt</file>
-     <file role="test">perl019.phpt</file>
-     <file role="test">perl020.phpt</file>
-     <file role="test">perl021.phpt</file>
-     <file role="test">perl022.phpt</file>
-     <file role="test">perl023.phpt</file>
-     <file role="test">perl024.phpt</file>
-     <file role="test">perl025.phpt</file>
-     <file role="test">perl026.phpt</file>
-     <file role="test">perl027.phpt</file>
-     <file role="test">perl028.phpt</file>
-     <file role="test">perl029.phpt</file>
-     <file role="test">perl030.phpt</file>
-     <file role="test">perl031.phpt</file>
-     <file role="test">perl032.phpt</file>
-     <file role="test">perl033.phpt</file>
-     <file role="test">perl034.phpt</file>
-     <file role="test">perl035.phpt</file>
-     <file role="test">perl036.phpt</file>
-     <file role="test">perl037.phpt</file>
-     <file role="test">perl038.phpt</file>
-     <file role="test">perl039.phpt</file>
-     <file role="test">perl040.phpt</file>
-     <file role="test">perl041.phpt</file>
-     <file role="test">perl042.phpt</file>
-     <file role="test">perl043.phpt</file>
-     <file role="test">perl044.phpt</file>
-     <file role="test">perl045.phpt</file>
-     <file role="test">perl046.phpt</file>
-     <file role="test">perl047.phpt</file>
-     <file role="test">perl048.phpt</file>
-     <file role="test">perl049.phpt</file>
-     <file role="test">perl050.phpt</file>
-     <file role="test">perl051.phpt</file>
-     <file role="test">perl052.phpt</file>
-     <file role="test">perl053.phpt</file>
-     <file role="test">perl054.phpt</file>
-     <file role="test">perl055.phpt</file>
-     <file role="test">perl056.phpt</file>
-     <file role="test">perl057.phpt</file>
-     <file role="test">perl058.phpt</file>
-     <file role="test">perl059.phpt</file>
-     <file role="test">perl060.phpt</file>
-     <file role="test">perl061.phpt</file>
-     <file role="test">perl062.phpt</file>
-     <file role="test">perl063.phpt</file>
-     <file role="test">perl064.phpt</file>
-     <file role="test">perl065.phpt</file>
-     <file role="test">perl066.phpt</file>
-     <file role="test">perl067.phpt</file>
-     <file role="test">perl068.phpt</file>
-     <file role="test">perl069.phpt</file>
-     <file role="test">perl070.phpt</file>
-    </dir>
-   </dir>
-  </filelist>
- </release>
- <deps>
-  <dep type="php" rel="ge" version="5.0.0" />
- </deps>
+ <lead>
+  <name>Dmitry Stogov</name>
+  <user>dmitry</user>
+  <email>dmitry@zend.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-11-05</date>
+ <time>17:39:11</time>
+ <version>
+  <release>0.7</release>
+  <api>0.7</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP</license>
+ <notes>
+Initial release
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="tests">
+    <file baseinstalldir="perl" name="perl001.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl001.pl" role="test" />
+    <file baseinstalldir="perl" name="perl002.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl003.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl004.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl005.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl006.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl007.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl008.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl009.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl010.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl011.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl012.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl013.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl014.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl015.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl016.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl017.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl018.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl019.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl020.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl021.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl022.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl023.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl024.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl025.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl026.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl027.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl028.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl029.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl030.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl031.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl032.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl033.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl034.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl035.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl036.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl037.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl038.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl039.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl040.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl041.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl042.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl043.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl044.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl045.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl046.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl047.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl048.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl049.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl050.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl051.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl052.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl053.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl054.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl055.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl056.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl057.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl058.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl059.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl060.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl061.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl062.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl063.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl064.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl065.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl066.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl067.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl068.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl069.phpt" role="test" />
+    <file baseinstalldir="perl" name="perl070.phpt" role="test" />
+    <file baseinstalldir="perl" name="skipif.inc" role="test" />
+   </dir> <!-- //tests -->
+   <file baseinstalldir="perl" name="config.m4" role="src" />
+   <file baseinstalldir="perl" name="config.w32" role="src" />
+   <file baseinstalldir="perl" name="CREDITS" role="doc" />
+   <file baseinstalldir="perl" name="EXPERIMENTAL" role="doc" />
+   <file baseinstalldir="perl" name="perl.dsp" role="src" />
+   <file baseinstalldir="perl" name="php_perl.c" role="src" />
+   <file baseinstalldir="perl" name="php_perl.h" role="src" />
+   <file baseinstalldir="perl" name="README" role="doc" />
+   <file baseinstalldir="perl" name="TODO" role="doc" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>perl</providesextension>
+ <extsrcrelease />
 </package>
