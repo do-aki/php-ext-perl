@@ -550,7 +550,7 @@ static zval* php_perl_sv_to_zval_noref(PerlInterpreter *my_perl,
     } else if (SvNOK(sv)) {          /* double */
       ZVAL_DOUBLE(zv, SvNV(sv));
     } else if (SvPOK(sv)) {          /* string */
-      int  len;
+      STRLEN  len;
       char *str = SvPV(sv, len);
       ZVAL_STRINGL(zv, str, len, 1);
     } else if (sv_isobject(sv)) {    /* object */
@@ -564,6 +564,7 @@ static zval* php_perl_sv_to_zval_noref(PerlInterpreter *my_perl,
         php_perl_object *obj = (php_perl_object*)emalloc(sizeof(php_perl_object));
         obj->sv = sv;
         obj->properties = NULL;
+        obj->context = PERL_SCALAR;
         SvREFCNT_inc(sv);
         zv->type = IS_OBJECT;
         zv->value.obj.handlers = &php_perl_object_handlers;
@@ -690,7 +691,7 @@ static void php_perl_call_method(PerlInterpreter* my_perl, SV* obj,
         }
       } else {
         for (i = 0; i < count; i++) {
-          int  key_len;
+          STRLEN  key_len;
           char *key = SvPV(ST(i), key_len);
           if (i != count-1) {
             add_assoc_zval_ex(return_value, key, key_len+1,
@@ -753,7 +754,7 @@ static void php_perl_call(PerlInterpreter* my_perl,
         }
       } else {
         for (i = 0; i < count; i++) {
-          int  key_len;
+          STRLEN  key_len;
           char *key = SvPV(ST(i), key_len);
           if (i != count-1) {
             add_assoc_zval_ex(return_value, key, key_len+1,
@@ -806,7 +807,7 @@ static void php_perl_set(zval **object, zval *value TSRMLS_DC)
   if (sv == NULL) {
     zend_error(E_ERROR, "[perl] Can not set value");
     return;
-  } 
+  }
   while (SvTYPE(sv) == SVt_RV) {
     sv = SvRV(sv);
   }
@@ -845,8 +846,8 @@ static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS
           SV* tmp_sv = *prop_val;
 
           while (1) {
-            if (sv_isobject(tmp_sv) || 
-                SvTYPE(tmp_sv) == SVt_PVAV || 
+            if (sv_isobject(tmp_sv) ||
+                SvTYPE(tmp_sv) == SVt_PVAV ||
                 SvTYPE(tmp_sv) == SVt_PVHV) {
               write = TRUE;
               break;
@@ -871,7 +872,7 @@ static zval* php_perl_read_dimension(zval *object, zval *offset, int type TSRMLS
         Z_SET_ISREF_P(retval);
         Z_TYPE_P(retval) = IS_OBJECT;
         Z_OBJ_HT_P(retval) = &php_perl_proxy_handlers;
-        Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);        
+        Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);
       } else {
         ALLOC_INIT_ZVAL(retval);
         retval = php_perl_sv_to_zval(my_perl, *prop_val, retval TSRMLS_CC);
@@ -1016,7 +1017,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
   php_perl_object *obj = (php_perl_object*)zend_object_store_get_object(object TSRMLS_CC);
   zval tmp_member;
   SV* sv = NULL;
-  zend_bool write = obj->context != PERL_SCALAR && 
+  zend_bool write = obj->context != PERL_SCALAR &&
                     type != BP_VAR_R && type != BP_VAR_IS;
 
   if (member->type != IS_STRING) {
@@ -1120,8 +1121,8 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
           SV* tmp_sv = sv;
 
           while (1) {
-            if (sv_isobject(tmp_sv) || 
-                SvTYPE(tmp_sv) == SVt_PVAV || 
+            if (sv_isobject(tmp_sv) ||
+                SvTYPE(tmp_sv) == SVt_PVAV ||
                 SvTYPE(tmp_sv) == SVt_PVHV) {
               write = TRUE;
               break;
@@ -1137,7 +1138,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       zend_error(E_WARNING, "[perl] Object is not a hash");
     }
   }
-  
+
   if (sv != NULL) {
     if (write && !sv_isobject(sv)) {
       php_perl_object *obj = (php_perl_object*)emalloc(sizeof(php_perl_object));
@@ -1152,7 +1153,7 @@ static zval* php_perl_read_property(zval *object, zval *member, int type TSRMLS_
       Z_SET_ISREF_P(retval);
       Z_TYPE_P(retval) = IS_OBJECT;
       Z_OBJ_HT_P(retval) = &php_perl_proxy_handlers;
-      Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);        
+      Z_OBJ_HANDLE_P(retval) = zend_objects_store_put(obj, php_perl_destructor, NULL, NULL TSRMLS_CC);
     } else {
       retval = php_perl_sv_to_zval(my_perl, sv, retval TSRMLS_CC);
       /* ensure we're creating a temporary variable */
@@ -1951,7 +1952,7 @@ PHP_METHOD(Perl, eval)
           }
         } else {
           for (i = 0; i < count; i++) {
-            int  key_len;
+            STRLEN  key_len;
             char *key = SvPV(ST(i), key_len);
             if (i != count-1) {
               add_assoc_zval_ex(return_value, key, key_len+1,
