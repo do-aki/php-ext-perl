@@ -597,6 +597,8 @@ static zval* php_perl_sv_to_zval_noref(PerlInterpreter *my_perl,
         add_assoc_zval_ex(zv, key, key_len+1,
           php_perl_sv_to_zval_ref(my_perl, el_sv, NULL, var_hash TSRMLS_CC));
       }
+    } else if (SvTYPE(sv) == SVt_PVIV && !SvOK(sv)) { /* pointer to undef? */
+      ZVAL_NULL(zv);
     } else {
       zend_error(E_ERROR, "[perl] Can't convert Perl type (%ld) to PHP",
                  SvTYPE(sv));
