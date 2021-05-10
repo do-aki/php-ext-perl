@@ -1,7 +1,7 @@
 --TEST--
 Test 41: setting elements of array based perl object
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

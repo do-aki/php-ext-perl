@@ -1,7 +1,7 @@
 --TEST--
 Test 33: calling objects methods with arguments
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

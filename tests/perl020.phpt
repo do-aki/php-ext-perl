@@ -1,7 +1,7 @@
 --TEST--
 Test 20: die() in perl_eval()
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -12,9 +12,8 @@ PERL_END
 echo "ok\n";
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'PerlException' with message '[perl] eval error: 	(in cleanup) Bye bye! at (eval %d) line %d.
-' in %sperl020.php:%d
+Fatal error: Uncaught PerlException: [perl] eval error: Bye bye! at (eval 1) line 1. in %sperl020.php:4
 Stack trace:
-#0 %sperl020.php(6): Perl->eval('%s')
+#0 %sperl020.php(4): Perl->eval('  die("Bye bye!...')
 #1 {main}
-  thrown in %sperl020.php on line %d
+  thrown in %sperl020.php on line 4

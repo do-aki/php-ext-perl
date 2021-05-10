@@ -1,7 +1,7 @@
 --TEST--
 Test 54: Perl's cyclic object structures support
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -23,25 +23,25 @@ PERL_END
 var_dump($x);
 $x->x = 1;
 var_dump($x);
+$x->foo->x = 2;
+var_dump($x);
 echo "ok\n";
 ?>
 --EXPECT--
 object(Perl::Foo)#2 (1) {
   ["foo"]=>
-  object(Perl::Foo)#2 (1) {
-    ["foo"]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 object(Perl::Foo)#2 (2) {
   ["x"]=>
   int(1)
   ["foo"]=>
-  object(Perl::Foo)#2 (2) {
-    ["x"]=>
-    int(1)
-    ["foo"]=>
-    *RECURSION*
-  }
+  *RECURSION*
+}
+object(Perl::Foo)#2 (2) {
+  ["x"]=>
+  int(2)
+  ["foo"]=>
+  *RECURSION*
 }
 ok

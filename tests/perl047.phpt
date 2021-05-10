@@ -1,7 +1,7 @@
 --TEST--
 Test 47: foreach() on Perl object
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -21,14 +21,19 @@ PERL_END
 );
 $x = new Perl('Foo');
 $i = 0;
+$output = [];
 foreach($x as $var => $val) {
-  echo "$var = ";
-  var_dump($val);
-  if (++$i > 5) break;
+    ob_start();
+    echo "$var = ";
+    var_dump($val);
+    $output[] = ob_get_clean();
+    if (++$i > 5) break;
 }
+sort($output);
+echo implode("", $output);
 echo "ok\n";
 ?>
 --EXPECT--
-y = int(2)
 x = int(1)
+y = int(2)
 ok

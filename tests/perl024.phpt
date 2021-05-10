@@ -1,7 +1,7 @@
 --TEST--
 Test 24: reading scalar object's properties
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

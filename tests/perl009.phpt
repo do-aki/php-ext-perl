@@ -1,7 +1,7 @@
 --TEST--
 Test 9: accessing array perl variables
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

@@ -1,7 +1,7 @@
 --TEST--
 Test 72: Hash proxy test
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -11,17 +11,19 @@ $perl->hash->x['c'] += 2;
 $x = &$perl->hash->x;
 $x['d'] = 4;
 unset($perl->hash->x['e']);
-var_dump($perl->hash->x);
+$out = $perl->hash->x;
+ksort($out);
+var_dump($out);
 echo "ok\n";
 ?>
 --EXPECT--
 array(4) {
-  ["c"]=>
-  int(3)
   ["a"]=>
   int(1)
   ["b"]=>
   int(2)
+  ["c"]=>
+  int(3)
   ["d"]=>
   int(4)
 }

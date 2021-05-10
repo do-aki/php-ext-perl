@@ -1,7 +1,7 @@
 --TEST--
 Test 38: cloning perl objects
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

@@ -1,14 +1,16 @@
 --TEST--
 Test 68: Function call in scalar/array/hash context
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
 $perl->eval('sub f() {return ("a","b","c");}');
 var_dump($perl->f());
 var_dump($perl->array->f());
-var_dump($perl->hash->f());
+$hash = $perl->hash->f();
+ksort($hash);
+var_dump($hash);
 echo "ok\n";
 ?>
 --EXPECT--

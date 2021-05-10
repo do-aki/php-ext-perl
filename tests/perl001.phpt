@@ -1,14 +1,14 @@
 --TEST--
 Test 1: require of existing file
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 error_reporting(E_ALL);
 $perl = new Perl();
 $perl->require(dirname(__FILE__)."/perl001.pl");
-echo "ok\n";
+echo "ok from php\n";
 ?>
 --EXPECT--
-ok
-ok
+ok from perl
+ok from php

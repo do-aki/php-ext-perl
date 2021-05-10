@@ -1,7 +1,7 @@
 --TEST--
 Test 35: checking isset() and empty() on object properies
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

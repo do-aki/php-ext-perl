@@ -1,7 +1,7 @@
 --TEST--
 Test 61: Modifying object property with += operator
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

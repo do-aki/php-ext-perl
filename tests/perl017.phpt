@@ -1,7 +1,7 @@
 --TEST--
 Test 17: calling function from external Perl module
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

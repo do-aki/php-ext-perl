@@ -1,7 +1,7 @@
 --TEST--
-Test 43: clearing clearing elements of array based object with unset()
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+Test 43: clearing elements of array based object with unset()
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

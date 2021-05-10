@@ -1,7 +1,7 @@
 --TEST--
 Test 56: Perl's cyclic object structures support
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -31,16 +31,10 @@ echo "ok\n";
 --EXPECT--
 object(Perl::Foo)#2 (1) {
   ["foo"]=>
-  object(Perl::Foo)#2 (1) {
-    ["foo"]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 object(Perl::Foo)#2 (1) {
   ["foo"]=>
-  object(Perl::Foo)#2 (1) {
-    ["foo"]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 ok

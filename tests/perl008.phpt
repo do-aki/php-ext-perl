@@ -1,7 +1,7 @@
 --TEST--
 Test 8: accessing scalar perl variables
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

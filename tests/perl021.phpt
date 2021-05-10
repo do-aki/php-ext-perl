@@ -1,7 +1,7 @@
 --TEST--
 Test 21: returning object from eval()
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -36,7 +36,7 @@ object(Perl::Foo)#2 (1) {
   ["x"]=>
   int(12)
 }
-object(Perl::Bar)#2 (1) {
+object(Perl::Bar)#3 (1) {
   ["y"]=>
   int(8)
 }

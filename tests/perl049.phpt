@@ -1,7 +1,7 @@
 --TEST--
 Test 49: creating and using perl objects from external module
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

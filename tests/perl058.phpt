@@ -1,7 +1,7 @@
 --TEST--
 Test 58: Proxy test
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -30,3 +30,5 @@ object(Perl::Foo)#2 (1) {
   int(2)
 }
 ok
+--XFAIL--
+Should be reimplemented, see https://github.com/php/php-src/blob/PHP-8.0/UPGRADING.INTERNALS#L66

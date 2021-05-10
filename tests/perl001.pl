@@ -1,1 +1,1 @@
-print "ok\n"
+print "ok from perl\n"

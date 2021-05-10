@@ -1,7 +1,7 @@
 --TEST--
 Test 73: Array/hash property proxy test
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -22,20 +22,17 @@ PERL_END
 $foo = new Perl('Foo');
 $foo->a[0] = 2;
 $foo->h['a'] = 2;
-var_dump($foo);
+var_dump($foo->a);
+var_dump($foo->h);
 echo "ok\n";
 ?>
 --EXPECT--
-object(Perl::Foo)#2 (2) {
-  ["h"]=>
-  array(1) {
-    ["a"]=>
-    int(2)
-  }
+array(1) {
+  [0]=>
+  int(2)
+}
+array(1) {
   ["a"]=>
-  array(1) {
-    [0]=>
-    int(2)
-  }
+  int(2)
 }
 ok

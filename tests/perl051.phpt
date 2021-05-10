@@ -1,11 +1,13 @@
 --TEST--
 Test 51: PHP's references support
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
 $perl->eval(<<<PERL_END
+use Devel::Peek;
+
 sub f {
   \$x = shift(@_);
   \$x->[0] = 3;

@@ -1,7 +1,7 @@
 --TEST--
 Test 53: PHP's cyclic structures support
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -29,33 +29,18 @@ array(2) {
   [0]=>
   int(2)
   [1]=>
-  array(2) {
-    [0]=>
-    int(2)
-    [1]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 array(2) {
   [0]=>
   int(3)
   [1]=>
-  array(2) {
-    [0]=>
-    int(3)
-    [1]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 array(2) {
   [0]=>
   int(4)
   [1]=>
-  array(2) {
-    [0]=>
-    int(4)
-    [1]=>
-    *RECURSION*
-  }
+  *RECURSION*
 }
 ok

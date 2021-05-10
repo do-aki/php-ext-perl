@@ -1,57 +1,38 @@
-What is ext/perl?
-=================
+What is php-ext-perl?
+=====================
 
-  This extension allows embedding of Perl Interpreter into PHP5 to:
-    * execute Perl files
-    * evaluate Perl code
-    * access values of Perl variables
-    * call Perl subroutines
-    * instantiate and manipulate of Perl objects
+This extension allows embedding of Perl interpreter into PHP 8 to:
+
+  * execute Perl files
+  * evaluate Perl code
+  * access values of Perl variables
+  * call Perl subroutines
+  * instantiate and manipulate of Perl objects
+
+It is based on the work of Dmitry Stogov who wrote the PHP 5 extension and was
+mostly rewritten for PHP 8.
 
 Requirements
 ============
-  PHP 5.0.0RC2 or later
-  Perl 5.8.0 or later
 
-Quick install
-=============
+PHP 8.0.0 or later
+Tested on Perl 5.28 and 5.38
+Linux
 
-  Step 1. Compile this extension. PHP_PREFIX and PERL_PREFIX mast point to real
-          PHP and Perl instalation prefixes.
+Compilation
+===========
 
-    export PHP_PREFIX="/usr"
-    export PERL_PREFIX="/usr"
-    $PHP_PREFIX/bin/phpize
-    ./configure --with-perl=$PERL_PREFIX --with-php-config=$PHP_PREFIX/bin/php-config
-    make  
+phpize
+./configure
+make test
 
-  Step 2. Install the extension (this step can require root privileges)
+Installation
+============
 
-    make install
+sudo make install
 
-  Step 3. Add perl extension into your php.ini (this step can require root privileges)
-
-    extension=perl.so
-
-Windows Installation Notes
-==========================
-
-  Step 1. Download ActivePerl binaries for Windows from 
-          http://www.activestate.com/Products/ActivePerl/
-          and install them.
-
-  Step 2. Put this extension into corresponding PHP source tree (into ext/perl)
-
-  Step 3. Compile the extension
-
-    SET PERL_HOME=C:\perl
-    msdev perl.dsp /MAKE "perl - Win32 Release_TS"
-
-  Step 4. Copy php_perl.dll (from Release_TS) to PHP extension dir
-
-  Step 5. Add perl extension into your php.ini
-
-    extension=php_perl.dll
+Add to php.ini:
+extension=perl.so
 
 PHP API
 =======
@@ -138,25 +119,53 @@ PHP API
       var_dump($x->array->f()); // call method "f" in array context
       var_dump($x->hash->f());  // call method "f" in hash context
 
+Known limitation - proxy objects
+================================
 
+Perl objects are passed between Perl and PHP by reference. All other data types
+(including arrays and hashes) are passed by value. So modification of Perl's
+arrays and hashes in PHP will not have effect in Perl.
 
-Known BUGS and limitations
-==========================
-  *  Perl objects passed between Perl and PHP by reference all other data type
-     (including arrays and hashes) passed by value. So modification of Perl's
-     arrays and hashes in PHP will not have effect in Perl.
-
-     $x = $perl->array->x;
-     $x[0] = 1; // Perl's array @x still unmodifyed
+    $perl->eval("@x = (1,2,3)");
+    $perl->eval('print @x'); // prints 123
+    $x = $perl->array->x;
+    $x[1] = 9; // $x = [1,9,3];
+    $perl->eval('print @x'); // prints 123
      
-     But you can use PHP references to do this. The following code works fine.
-     
-     $x = &$perl->array->x;
-     $x[0] = 1; // Modifies Perl's array @x
+Previously, the following could be done:
 
-  *  pecl/perl can't call internal Perl functions
-     (print, die, ...).
+    $perl->eval("@x = (1,2,3)");
+    $perl->eval('print @x'); // prints 123
+    $x = &$perl->array->x; // we return a proxy object because of the &
+    $x[1] = 9;
+    $perl->eval('print @x'); // prints 193
 
-This extension was testd on RedHat Linux 9.0 with PHP 5.0.0RC2-dev (non ZTS build)
-and perl-5.8.0 (installed from RPM) and on Windows 2000 with PHP-5.0.0RC2-dev
-(ZTS build) and perl-5.8.0.
+However, PHP 8.0 deprecated line 4 of the above example. It can be reimplemented
+as it has been in php_ffi by a special property called "data" or something, but
+I personally don't require that feature so I haven't implemented it yet.
+
+Known limitation - calling internal Perl functions
+==================================================
+
+You can't call internal perl functions (print, die, etc) using the
+$perl->function() syntax.
+
+TODO
+====
+
+* Some tests don't pass because perl hashes are returned in random order. I have
+  mitigated this in some places but the remaining ones would no longer be a good
+  test if changed. Maybe something clever could be done with EXPECTREGEX or a
+  patch could be made upstream or maybe output buffer could be checked by the
+  test itself.
+
+* Re-implement proxy scalar object writing
+
+Support
+=======
+
+I need to maintain this for production anyway, so bug reports and PRs are
+welcome. Ideally, make a PR with a phpt file which fails.
+
+This version of the extension has not been tested on Windows, or with Perl
+versions other than 5.28 and 5.32.

@@ -1,7 +1,7 @@
 --TEST--
 Test 4: returning scalar value from eval()
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

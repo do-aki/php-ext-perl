@@ -1,7 +1,7 @@
 --TEST--
 Test 70: Catching Perl errors
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

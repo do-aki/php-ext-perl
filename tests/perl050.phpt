@@ -1,7 +1,7 @@
 --TEST--
 Test 50: Perl's references support
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

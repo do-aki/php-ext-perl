@@ -1,7 +1,7 @@
 --TEST--
 Test 36: clearing object properies with unset()
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

@@ -1,7 +1,7 @@
 --TEST--
 Test 64: Modifying array Perl variables
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

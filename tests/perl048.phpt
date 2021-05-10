@@ -1,7 +1,7 @@
 --TEST--
 Test 48: foreach() on array based Perl object
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

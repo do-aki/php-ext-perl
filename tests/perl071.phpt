@@ -1,7 +1,7 @@
 --TEST--
 Test 71: Array proxy test
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

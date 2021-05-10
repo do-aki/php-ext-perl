@@ -1,7 +1,7 @@
 --TEST--
 Test 14: passing array argument to user function
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

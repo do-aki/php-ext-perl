@@ -1,7 +1,7 @@
 --TEST--
 Test 69: Method call in scalar/array/hash context
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -24,7 +24,9 @@ PERL_END
 $obj = new Perl("Foo");
 var_dump($obj->f());
 var_dump($obj->array->f());
-var_dump($obj->hash->f());
+$hash = $obj->hash->f();
+ksort($hash);
+var_dump($hash);
 echo "ok\n";
 ?>
 --EXPECT--

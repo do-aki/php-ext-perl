@@ -1,7 +1,7 @@
 --TEST--
 Test 26: reading hash object's property
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -19,16 +19,18 @@ package main;
 PERL_END
 );
 $foo = new Perl('Foo');
-var_dump($foo->x);
+$x = $foo->x;
+ksort($x);
+var_dump($x);
 echo "ok\n";
 ?>
 --EXPECT--
 array(3) {
-  ["str"]=>
-  string(3) "str"
-  ["int"]=>
-  int(1)
   ["flost"]=>
   float(2.5)
+  ["int"]=>
+  int(1)
+  ["str"]=>
+  string(3) "str"
 }
 ok

@@ -1,0 +1,8 @@
+version: '3.6'
+
+services:
+  php-8.0:
+    build: .
+    volumes:
+      - ./:/php-ext-perl
+    working_dir: /php-ext-perl

@@ -1,7 +1,7 @@
 --TEST--
 Test 45: modifying property of object
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -19,11 +19,21 @@ package main;
 PERL_END
 );
 $x = new Perl('Foo');
+var_dump($x->x);
 $x->x++;
+var_dump($x->x);
 ++$x->x;
+var_dump($x->x);
+--$x->x;
+var_dump($x->x);
+$x->x--;
 var_dump($x->x);
 echo "ok\n";
 ?>
 --EXPECT--
+int(0)
+int(1)
 int(2)
+int(1)
+int(0)
 ok

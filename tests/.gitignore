@@ -1,0 +1,4 @@
+*
+!*.phpt
+!*.pl
+!.gitignore

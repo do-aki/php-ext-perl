@@ -1,7 +1,7 @@
 --TEST--
 Test 31: setting object object's property
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -23,6 +23,10 @@ package Foo;
     bless \$self, \$type;
     return \$self;
   }
+  sub getbarx {
+    my \$self = shift;
+    print \$self->{'bar'}->{'x'}, "\n";
+  }
 package main;
 PERL_END
 );
@@ -30,14 +34,16 @@ $foo = new Perl('Foo');
 $foo->bar = $bar =new Perl('Bar');
 $bar->x = 2;
 var_dump($foo);
+$foo->getbarx();
 echo "ok\n";
 ?>
---EXPECT--
-object(Perl::Foo)#2 (1) {
+--EXPECTF--
+object(Perl::Foo)#%d (1) {
   ["bar"]=>
-  object(Perl::Bar)#3 (1) {
+  object(Perl::Bar)#%d (1) {
     ["x"]=>
     int(2)
   }
 }
+2
 ok

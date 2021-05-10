@@ -1,7 +1,7 @@
 --TEST--
 Test 34: passing object argument to user function
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

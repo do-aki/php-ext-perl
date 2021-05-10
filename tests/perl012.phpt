@@ -1,7 +1,7 @@
 --TEST--
 Test 12: calling perl user function
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();

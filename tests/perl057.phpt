@@ -1,7 +1,7 @@
 --TEST--
 Test 57: Perl and PHP output buffering
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 function xxx($str) {

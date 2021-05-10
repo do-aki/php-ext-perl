@@ -1,7 +1,7 @@
 --TEST--
 Test 15: passing hash argument to user function
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -12,17 +12,19 @@ sub f {
 PERL_END
 );
 $perl->f(array("a"=>1,"b"=>2.5,"c"=>"str","d"=>array(1)));
-var_dump($perl->var);
+$res = $perl->var;
+ksort($res);
+var_dump($res);
 echo "ok\n";
 ?>
 --EXPECT--
 array(4) {
-  ["c"]=>
-  string(3) "str"
   ["a"]=>
   int(1)
   ["b"]=>
   float(2.5)
+  ["c"]=>
+  string(3) "str"
   ["d"]=>
   array(1) {
     [0]=>

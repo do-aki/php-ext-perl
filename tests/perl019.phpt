@@ -1,7 +1,7 @@
 --TEST--
 Test 19: die() in user function
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+perl
 --FILE--
 <?php
 $perl = new Perl();
@@ -16,9 +16,9 @@ $perl->f();
 echo "ok\n";
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'PerlException' with message '[perl] call error: 	(in cleanup) Bye bye! at (eval %d) line %d.
-' in %sperl019.php:%d
+Fatal error: Uncaught PerlException: [perl] method call error: Bye bye! at (eval 1) line 2.
+ in %sperl019.php:10
 Stack trace:
 #0 %sperl019.php(10): Perl->f()
 #1 {main}
-  thrown in %sperl019.php on line %d
+  thrown in %sperl019.php on line 10
